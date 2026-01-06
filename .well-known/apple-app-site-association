@@ -3,7 +3,7 @@
     "details": [
       {
         "appIDs": [
-          "TEAM_ID.com.kopare.app"
+          "com.grandlevel.tandem"
         ],
         "components": [
           {
@@ -16,12 +16,12 @@
   },
   "webcredentials": {
     "apps": [
-      "TEAM_ID.com.kopare.app"
+      "com.grandlevel.tandem"
     ]
   },
   "appclips": {
     "apps": [
-      "TEAM_ID.com.kopare.app.Clip"
+      ""
     ]
   }
 }
