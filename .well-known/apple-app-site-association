@@ -1,0 +1,27 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "TEAM_ID.com.kopare.app"
+        ],
+        "components": [
+          {
+            "/": "*",
+            "comment": "Matches all paths - universal links will open in the Kopare app"
+          }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "TEAM_ID.com.kopare.app"
+    ]
+  },
+  "appclips": {
+    "apps": [
+      "TEAM_ID.com.kopare.app.Clip"
+    ]
+  }
+}
