@@ -1,0 +1,72 @@
+<svg width="300" height="650" viewBox="0 0 300 650" xmlns="http://www.w3.org/2000/svg">
+  <!-- Phone frame -->
+  <rect width="300" height="650" rx="30" fill="#C4D7E0"/>
+
+  <!-- Screen -->
+  <rect x="10" y="10" width="280" height="630" rx="25" fill="#F0F5F7"/>
+
+  <!-- Status bar -->
+  <text x="30" y="35" font-family="Arial" font-size="12" fill="#2C5364">8:55</text>
+
+  <!-- Header -->
+  <text x="150" y="80" font-family="Arial" font-size="20" font-weight="bold" fill="#2C5364" text-anchor="middle">Expenses</text>
+
+  <!-- Tabs -->
+  <rect x="30" y="100" width="80" height="35" rx="17" fill="#4A90E2"/>
+  <text x="70" y="123" font-family="Arial" font-size="13" fill="#FFFFFF" text-anchor="middle" font-weight="bold">List</text>
+  <text x="150" y="123" font-family="Arial" font-size="13" fill="#4A90E2" text-anchor="middle">Balance</text>
+  <text x="230" y="123" font-family="Arial" font-size="13" fill="#4A90E2" text-anchor="middle">Charts</text>
+
+  <!-- Expense Card 1 -->
+  <g transform="translate(20, 160)">
+    <rect width="260" height="140" rx="15" fill="#FFFFFF"/>
+    <circle cx="35" cy="35" r="18" fill="#FFE5E0"/>
+    <text x="30" y="40" font-family="Arial" font-size="18" text-anchor="middle">🏥</text>
+
+    <text x="65" y="30" font-family="Arial" font-size="16" font-weight="bold" fill="#2C5364">Doctor Visit</text>
+    <text x="65" y="48" font-family="Arial" font-size="12" fill="#5A6C7D">Skin thing Co pay</text>
+    <text x="65" y="63" font-family="Arial" font-size="11" fill="#999">Jan 1, 2026 • Medical</text>
+
+    <rect x="200" y="20" width="50" height="25" rx="12" fill="#FFE5E0"/>
+    <text x="225" y="37" font-family="Arial" font-size="11" fill="#FF6B35" text-anchor="middle">Pending</text>
+
+    <text x="15" y="95" font-family="Arial" font-size="11" fill="#999">Total Paid</text>
+    <text x="15" y="115" font-family="Arial" font-size="20" font-weight="bold" fill="#2C5364">$50.00</text>
+
+    <text x="100" y="95" font-family="Arial" font-size="11" fill="#999">Requested</text>
+    <text x="100" y="115" font-family="Arial" font-size="20" fill="#4A90E2">$25.00</text>
+
+    <text x="200" y="95" font-family="Arial" font-size="11" fill="#999">Split</text>
+    <text x="220" y="115" font-family="Arial" font-size="20" fill="#4A90E2">50%</text>
+  </g>
+
+  <!-- Expense Card 2 -->
+  <g transform="translate(20, 320)">
+    <rect width="260" height="120" rx="15" fill="#FFFFFF"/>
+    <circle cx="35" cy="35" r="18" fill="#F0E5FF"/>
+    <text x="30" y="40" font-family="Arial" font-size="18" text-anchor="middle">👶</text>
+
+    <text x="65" y="30" font-family="Arial" font-size="16" font-weight="bold" fill="#2C5364">Baby sitting</text>
+    <text x="65" y="48" font-family="Arial" font-size="11" fill="#999">Jan 1, 2026 • Childcare</text>
+
+    <rect x="200" y="20" width="50" height="25" rx="12" fill="#FFE5E0"/>
+    <text x="225" y="37" font-family="Arial" font-size="11" fill="#FF6B35" text-anchor="middle">Pending</text>
+
+    <text x="15" y="75" font-family="Arial" font-size="11" fill="#999">Total Paid</text>
+    <text x="15" y="95" font-family="Arial" font-size="20" font-weight="bold" fill="#2C5364">$60.00</text>
+
+    <text x="100" y="75" font-family="Arial" font-size="11" fill="#999">Requested</text>
+    <text x="100" y="95" font-family="Arial" font-size="20" fill="#4A90E2">$30.00</text>
+
+    <text x="200" y="75" font-family="Arial" font-size="11" fill="#999">Split</text>
+    <text x="220" y="95" font-family="Arial" font-size="20" fill="#4A90E2">50%</text>
+  </g>
+
+  <!-- Bottom nav -->
+  <g transform="translate(0, 600)">
+    <rect x="20" y="0" width="260" height="50" rx="25" fill="#FFFFFF"/>
+    <text x="45" y="30" font-family="Arial" font-size="11" fill="#5A6C7D">Calendar</text>
+    <text x="115" y="30" font-family="Arial" font-size="11" fill="#5A6C7D">Messages</text>
+    <text x="185" y="30" font-family="Arial" font-size="11" fill="#4A90E2" font-weight="bold">Expenses</text>
+  </g>
+</svg>

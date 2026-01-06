@@ -1,0 +1,53 @@
+<svg width="300" height="650" viewBox="0 0 300 650" xmlns="http://www.w3.org/2000/svg">
+  <!-- Phone frame -->
+  <rect width="300" height="650" rx="30" fill="#C4D7E0"/>
+
+  <!-- Screen -->
+  <rect x="10" y="10" width="280" height="630" rx="25" fill="#F0F5F7"/>
+
+  <!-- Status bar -->
+  <text x="30" y="35" font-family="Arial" font-size="12" fill="#2C5364">8:55</text>
+
+  <!-- Header -->
+  <text x="150" y="80" font-family="Arial" font-size="20" font-weight="bold" fill="#2C5364" text-anchor="middle">Messages</text>
+  <circle cx="250" cy="70" r="18" fill="#E0F5E5"/>
+  <text x="250" y="77" font-family="Arial" font-size="22" fill="#5CB85C" text-anchor="middle">+</text>
+
+  <!-- Message Card 1 -->
+  <g transform="translate(20, 120)">
+    <rect width="260" height="90" rx="15" fill="#FFFFFF"/>
+
+    <text x="15" y="25" font-family="Arial" font-size="15" font-weight="bold" fill="#2C5364">Doctor Visit - Jan 1, 2026</text>
+
+    <rect x="180" y="12" width="70" height="22" rx="11" fill="#FFE5E0"/>
+    <circle cx="195" cy="23" r="4" fill="#FF6B35"/>
+    <text x="205" y="27" font-family="Arial" font-size="11" fill="#FF6B35">Pending</text>
+
+    <text x="15" y="45" font-family="Arial" font-size="12" fill="#5A6C7D">Hey we had to go to the</text>
+    <text x="15" y="60" font-family="Arial" font-size="12" fill="#5A6C7D">doctor for a skin thing.. Add...</text>
+
+    <rect x="180" y="45" width="60" height="25" rx="12" fill="#E0F0FF"/>
+    <text x="210" y="62" font-family="Arial" font-size="11" fill="#4A90E2" text-anchor="middle">Calendar</text>
+  </g>
+
+  <!-- Message Card 2 -->
+  <g transform="translate(20, 230)">
+    <rect width="260" height="90" rx="15" fill="#FFFFFF"/>
+
+    <text x="15" y="25" font-family="Arial" font-size="15" font-weight="bold" fill="#2C5364">Dad's Family coming to to...</text>
+
+    <text x="15" y="45" font-family="Arial" font-size="12" fill="#5A6C7D">Hey was wondering if we can</text>
+    <text x="15" y="60" font-family="Arial" font-size="12" fill="#5A6C7D">swap this day, Let me know if...</text>
+
+    <rect x="180" y="45" width="60" height="25" rx="12" fill="#E0F0FF"/>
+    <text x="210" y="62" font-family="Arial" font-size="11" fill="#4A90E2" text-anchor="middle">Calendar</text>
+  </g>
+
+  <!-- Bottom nav -->
+  <g transform="translate(0, 600)">
+    <rect x="20" y="0" width="260" height="50" rx="25" fill="#FFFFFF"/>
+    <text x="45" y="30" font-family="Arial" font-size="11" fill="#5A6C7D">Calendar</text>
+    <text x="115" y="30" font-family="Arial" font-size="11" fill="#4A90E2" font-weight="bold">Messages</text>
+    <text x="185" y="30" font-family="Arial" font-size="11" fill="#5A6C7D">Expenses</text>
+  </g>
+</svg>

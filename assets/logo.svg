@@ -1,0 +1,17 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Main logo container -->
+  <g>
+    <!-- Two people icons -->
+    <circle cx="75" cy="50" r="12" fill="#2C5364"/>
+    <circle cx="105" cy="50" r="12" fill="#2C5364"/>
+
+    <!-- Rounded rectangle with heart -->
+    <rect x="55" y="70" width="90" height="70" rx="15" fill="#FF9B8A"/>
+
+    <!-- Heart icon -->
+    <path d="M100 110 L95 105 Q90 100 90 95 Q90 90 95 90 Q100 90 100 95 Q100 90 105 90 Q110 90 110 95 Q110 100 105 105 Z" fill="#FFFFFF"/>
+
+    <!-- Kopare text -->
+    <text x="100" y="175" font-family="Arial, sans-serif" font-size="40" font-weight="bold" fill="#2C5364" text-anchor="middle">kopare</text>
+  </g>
+</svg>
