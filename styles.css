@@ -49,6 +49,34 @@ nav .container {
     width: auto;
 }
 
+/* Tab Navigation Styles */
+.nav-tabs {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.nav-tab {
+    color: var(--text-light);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    background-color: transparent;
+}
+
+.nav-tab:hover {
+    background-color: var(--background-light);
+    color: var(--primary-blue);
+}
+
+.nav-tab.active {
+    background-color: var(--primary-blue);
+    color: var(--white);
+    font-weight: 600;
+}
+
 .cta-button-nav {
     background-color: var(--primary-blue);
     color: var(--white);
