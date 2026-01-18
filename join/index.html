@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-itunes-app" content="app-id=6749215322">
+    <title>Join Kopare - Co-parenting Simplified</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        h1 {
+            color: #2d3748;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .invite-code {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            letter-spacing: 2px;
+        }
+
+        p {
+            color: #4a5568;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .status.loading {
+            background: #edf2f7;
+            color: #4a5568;
+        }
+
+        .status.success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .status.error {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn.secondary {
+            background: #edf2f7;
+            color: #4a5568;
+        }
+
+        .btn.secondary:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 14px;
+            color: #718096;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">📱</div>
+        <h1>You've been invited to Kopare!</h1>
+
+        <div id="content">
+            <p>You're joining with invite code:</p>
+            <div class="invite-code" id="inviteCode">Loading...</div>
+            <div class="status loading">
+                <div class="spinner"></div>
+                <p>Opening Kopare app...</p>
+            </div>
+        </div>
+
+        <div id="fallback" style="display: none;">
+            <p>Kopare makes co-parenting simple with shared calendars, expense tracking, and messaging.</p>
+            <a href="#" id="openApp" class="btn">Open in App</a>
+            <a href="https://apps.apple.com/app/kopare/id6749215322" class="btn secondary">Download Kopare</a>
+        </div>
+
+        <div class="footer">
+            <a href="https://kopare.app" style="color: #667eea; text-decoration: none;">kopare.app</a> •
+            <a href="https://kopare.app/privacy-policy.html" style="color: #667eea; text-decoration: none;">Privacy Policy</a>
+        </div>
+    </div>
+
+    <script>
+        // Extract invite code from URL path or query parameter
+        function getInviteCode() {
+            // First try to get from query parameter (?code=CODE)
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryCode = urlParams.get('code');
+            if (queryCode) {
+                return queryCode.toUpperCase();
+            }
+
+            // Fall back to path-based code (/join/CODE)
+            const path = window.location.pathname;
+            // Handle both /join/CODE and /join/CODE/ formats
+            const match = path.match(/\/join\/([A-Z0-9]+)/i);
+            return match ? match[1].toUpperCase() : null;
+        }
+
+        // Update the page with invite code
+        const inviteCode = getInviteCode();
+        const inviteCodeElement = document.getElementById('inviteCode');
+        const statusElement = document.querySelector('.status');
+        const fallbackElement = document.getElementById('fallback');
+        const contentElement = document.getElementById('content');
+
+        if (inviteCode) {
+            inviteCodeElement.textContent = inviteCode;
+
+            // Attempt to open the app with universal link
+            const appUrl = `kopare://join/${inviteCode}`;
+            const universalLink = `https://kopare.app/join/${inviteCode}`;
+
+            // Try to open the app
+            let appOpened = false;
+
+            // Create a hidden iframe to trigger the app
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = appUrl;
+            document.body.appendChild(iframe);
+
+            // Set a timeout to show fallback if app doesn't open
+            setTimeout(() => {
+                if (!appOpened) {
+                    contentElement.style.display = 'none';
+                    fallbackElement.style.display = 'block';
+
+                    // Update the "Open in App" button
+                    const openAppBtn = document.getElementById('openApp');
+                    openAppBtn.href = appUrl;
+                    openAppBtn.onclick = (e) => {
+                        e.preventDefault();
+                        window.location.href = appUrl;
+
+                        // Fallback to App Store after a short delay
+                        setTimeout(() => {
+                            window.location.href = 'https://apps.apple.com/app/kopare/id6749215322';
+                        }, 2000);
+                    };
+                }
+            }, 3000);
+
+            // Detect if user leaves the page (app opened)
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    appOpened = true;
+                }
+            });
+
+            window.addEventListener('blur', () => {
+                appOpened = true;
+            });
+
+        } else {
+            // No invite code found
+            inviteCodeElement.textContent = 'Invalid Link';
+            statusElement.className = 'status error';
+            statusElement.innerHTML = '<p>⚠️ No invite code found in the URL</p>';
+
+            setTimeout(() => {
+                window.location.href = 'https://kopare.app';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
