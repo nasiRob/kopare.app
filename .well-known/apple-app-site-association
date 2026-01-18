@@ -7,8 +7,7 @@
         ],
         "components": [
           {
-            "/": "*",
-            "comment": "Matches all paths - universal links will open in the Kopare app"
+            "/": "*"
           }
         ]
       }
@@ -16,12 +15,7 @@
   },
   "webcredentials": {
     "apps": [
-      "com.grandlevel.tandem"
-    ]
-  },
-  "appclips": {
-    "apps": [
-      ""
+      "UADRPTMUML.com.grandlevel.tandem"
     ]
   }
 }
