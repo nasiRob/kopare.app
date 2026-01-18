@@ -200,14 +200,11 @@
             const appUrl = `kopare://join/${inviteCode}`;
             const universalLink = `https://kopare.app/join/${inviteCode}`;
 
-            // Try to open the app
+            // Try to open the app using window.location
             let appOpened = false;
 
-            // Create a hidden iframe to trigger the app
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = appUrl;
-            document.body.appendChild(iframe);
+            // Attempt to open the app directly
+            window.location.href = appUrl;
 
             // Set a timeout to show fallback if app doesn't open
             setTimeout(() => {
@@ -228,7 +225,7 @@
                         }, 2000);
                     };
                 }
-            }, 3000);
+            }, 2500);
 
             // Detect if user leaves the page (app opened)
             document.addEventListener('visibilitychange', () => {
