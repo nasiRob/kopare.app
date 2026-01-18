@@ -199,21 +199,12 @@
         if (inviteCode) {
             inviteCodeElement.textContent = inviteCode;
 
-            // Universal Links are handled automatically by iOS via the AASA file
-            // No need for JavaScript redirect - just show the fallback with options
-            contentElement.style.display = 'none';
-            fallbackElement.style.display = 'block';
+            // Store the invite code in session storage for the app to retrieve later
+            sessionStorage.setItem('kopare_invite_code', inviteCode);
 
-            // Update the "Open in App" button to use the universal link
-            const openAppBtn = document.getElementById('openApp');
-            const universalLink = `https://kopare.app/join/${inviteCode}`;
-
-            openAppBtn.href = universalLink;
-            openAppBtn.onclick = (e) => {
-                // Let the universal link work naturally
-                // If app is installed, iOS will prompt to open it
-                // If not, fall through to showing App Store link
-            };
+            // Directly redirect to App Store
+            // When user installs and opens app, iOS will trigger the universal link
+            window.location.href = 'https://apps.apple.com/app/kopare/id6749215322';
 
         } else {
             // No invite code found
