@@ -1,0 +1,13 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>SignalScroll App Icon</title>
+  <desc>Near-black rounded square with a continuous-line S mark for SignalScroll.</desc>
+  <rect x="48" y="48" width="928" height="928" rx="220" fill="#0A0A0C"/>
+  <rect x="48.5" y="48.5" width="927" height="927" rx="219.5" stroke="#FFFFFF" stroke-opacity="0.07"/>
+  <path
+    d="M736 276H438C309 276 224 345 224 445C224 526 281 578 380 598L592 638C692 657 748 709 748 790C748 890 664 958 536 958H240"
+    stroke="#F5F5F2"
+    stroke-width="88"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>
