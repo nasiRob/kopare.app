@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SignalScroll Privacy Policy — how we collect, use, and protect your information.">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="SignalScroll">
+
+    <title>SignalScroll — Privacy Policy</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0A0A0C;
+            --hairline: rgba(255, 255, 255, 0.06);
+            --hairline-strong: rgba(255, 255, 255, 0.10);
+            --surface: rgba(255, 255, 255, 0.025);
+            --surface-hover: rgba(255, 255, 255, 0.045);
+
+            --text-primary: rgba(255, 255, 255, 0.96);
+            --text-secondary: rgba(255, 255, 255, 0.66);
+            --text-tertiary: rgba(255, 255, 255, 0.38);
+            --text-quaternary: rgba(255, 255, 255, 0.22);
+
+            --accent: #9DA8E8;
+
+            --xs: 4px;
+            --s: 8px;
+            --m: 12px;
+            --l: 16px;
+            --xl: 24px;
+            --xxl: 32px;
+            --xxxl: 48px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            background: var(--bg);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.6;
+        }
+
+        ::selection { background: rgba(157, 168, 232, 0.35); color: var(--text-primary); }
+
+        a { color: inherit; text-decoration: none; }
+
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 0 var(--xl);
+        }
+
+        .site-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(10, 10, 12, 0.78);
+            backdrop-filter: saturate(160%) blur(18px);
+            -webkit-backdrop-filter: saturate(160%) blur(18px);
+            border-bottom: 1px solid var(--hairline);
+        }
+
+        .site-nav .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 14px;
+            padding-bottom: 14px;
+        }
+
+        .wordmark {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            color: var(--text-primary);
+        }
+
+        .wordmark .mark {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            background: #101014;
+            border: 1px solid var(--hairline-strong);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wordmark .mark svg { width: 14px; height: 14px; }
+
+        .nav-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-radius: 999px;
+            border: 1px solid var(--hairline-strong);
+            transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .nav-cta:hover {
+            color: var(--text-primary);
+            background: var(--surface);
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+
+        main { padding: 64px 0 96px; }
+
+        .eyebrow {
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--text-tertiary);
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: var(--l);
+        }
+
+        .eyebrow .dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 12px rgba(157, 168, 232, 0.6);
+        }
+
+        h1 {
+            font-size: 40px;
+            line-height: 1.1;
+            font-weight: 600;
+            letter-spacing: -1.2px;
+            color: var(--text-primary);
+            margin-bottom: var(--m);
+        }
+
+        .effective {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            margin-bottom: var(--xxl);
+        }
+
+        .lede {
+            font-size: 17px;
+            line-height: 1.65;
+            color: var(--text-secondary);
+            padding: var(--l) var(--xl);
+            border: 1px solid var(--hairline);
+            border-radius: 14px;
+            background: var(--surface);
+            margin-bottom: var(--xxxl);
+        }
+
+        .lede strong { color: var(--text-primary); font-weight: 600; }
+
+        h2 {
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: -0.4px;
+            color: var(--text-primary);
+            margin-top: var(--xxxl);
+            margin-bottom: var(--m);
+        }
+
+        h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: var(--xl);
+            margin-bottom: var(--xs);
+        }
+
+        p, ul {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: var(--m);
+        }
+
+        ul { padding-left: 22px; }
+
+        li { margin-bottom: 6px; }
+
+        strong { color: var(--text-primary); font-weight: 600; }
+
+        a.inline {
+            color: var(--accent);
+            border-bottom: 1px solid rgba(157, 168, 232, 0.3);
+        }
+
+        a.inline:hover { border-bottom-color: var(--accent); }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-tertiary);
+            margin-bottom: var(--xl);
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover { color: var(--text-primary); }
+
+        footer {
+            padding: 40px 0 56px;
+            border-top: 1px solid var(--hairline);
+        }
+
+        footer .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--l);
+        }
+
+        footer p, footer a {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            line-height: 1.6;
+        }
+
+        footer a:hover { color: var(--text-secondary); }
+
+        footer .links { display: flex; gap: var(--xl); }
+
+        @media (max-width: 480px) {
+            .container { padding: 0 var(--l); }
+            h1 { font-size: 32px; letter-spacing: -1px; }
+            .lede { padding: var(--m) var(--l); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition-duration: 0.01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-nav">
+        <div class="container">
+            <a href="signalscroll.html" class="wordmark">
+                <span class="mark" aria-hidden="true">
+                    <svg viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M736 276H438C309 276 224 345 224 445C224 526 281 578 380 598L592 638C692 657 748 709 748 790C748 890 664 958 536 958H240" stroke="#F5F5F2" stroke-width="88" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                SignalScroll
+            </a>
+            <a href="signalscroll.html" class="nav-cta">Back to SignalScroll</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <a href="signalscroll.html" class="back-link">&larr; Back to SignalScroll</a>
+            <span class="eyebrow"><span class="dot"></span>Legal</span>
+            <h1>Privacy Policy</h1>
+            <p class="effective">Effective Date: May 19, 2026</p>
+
+            <div class="lede">
+                <p><strong>SignalScroll is built to feel quiet.</strong> The data we handle is the minimum we need to run the app, and we don't sell it. This policy explains what we collect, why, and how to delete it.</p>
+            </div>
+
+            <h2>Who we are</h2>
+            <p>SignalScroll ("the app", "we", "our") is an AI-powered learning feed for iOS, developed by Kopare. References to "you" mean the person using the app on a device they own or control. Questions: <a class="inline" href="mailto:support@kopare.app">support@kopare.app</a>.</p>
+
+            <h2>What we collect</h2>
+
+            <h3>Account information</h3>
+            <p>We use <strong>Sign in with Apple</strong> for authentication. Apple may share your name and email, or a private relay email, depending on what you choose at sign-in. We store the resulting account identifier and your relay or real email address on our backend (Google Firebase Authentication).</p>
+
+            <h3>Topics and feed content</h3>
+            <p>When you submit a topic, the topic text is sent to our backend and on to a third-party AI provider so the feed can be generated. Generated cards are returned to you and cached in your account's storage so they're there when you come back.</p>
+
+            <h3>Saved scrolls and cards</h3>
+            <p>If you save a card or a whole scroll, it's stored in your account on our backend (Google Firestore). Only you can read your saved items.</p>
+
+            <h3>Stay Current (live web grounding)</h3>
+            <p>If you enable <strong>Stay Current</strong>, your topic is also sent through a third-party web search provider so the feed can be grounded in fresh public web results. Stay Current is off by default. You can switch it off at any time from the Home screen.</p>
+
+            <h3>Subscription status</h3>
+            <p>Purchases of SignalScroll+ are processed entirely by <strong>Apple</strong>. We do not see your payment details. After Apple confirms a purchase, our backend records that your account is entitled to SignalScroll+ (a single flag, plus the Apple transaction identifier we need to validate renewals).</p>
+
+            <h3>Diagnostic and usage data</h3>
+            <p>We collect a small amount of non-identifying diagnostic data — app version, device model, anonymized event names (e.g. "paywall shown", "feed generated") — to understand which parts of the app work and which need attention. We do not link this to a marketing profile.</p>
+
+            <h2>How we use information</h2>
+            <ul>
+                <li>Run the app: generate feeds, store your saved content, sync across your devices.</li>
+                <li>Authenticate you and protect your account.</li>
+                <li>Verify SignalScroll+ entitlements with Apple's servers.</li>
+                <li>Diagnose bugs, performance issues, and abuse.</li>
+                <li>Improve the product (in aggregate — for example, "the depth cap fires more often than the topic cap").</li>
+            </ul>
+            <p>We do <strong>not</strong> sell or rent your personal information, and we do not use it to build advertising profiles.</p>
+
+            <h2>Who we share information with</h2>
+            <p>We use a small set of service providers to run the app. Each receives only what it needs:</p>
+            <ul>
+                <li><strong>Apple</strong> — Sign in with Apple, App Store payments and subscription management.</li>
+                <li><strong>Google Firebase</strong> — Authentication, database (Firestore), serverless functions, diagnostics.</li>
+                <li><strong>Third-party AI provider</strong> — receives the topic text you submit so it can generate feed cards. The provider's logs may retain the request for a short period for abuse and safety review, after which it is deleted.</li>
+                <li><strong>Web search provider</strong> — only when you enable Stay Current; receives the topic text so it can return live web results to ground the feed.</li>
+            </ul>
+            <p>We do not share your saved content with anyone outside these providers.</p>
+
+            <h2>Data retention</h2>
+            <p>Saved cards and scrolls stay in your account until you delete them or delete the account. Topic-submission logs are kept for up to 30 days for abuse mitigation, then purged. Subscription transaction records are retained as long as your account is active and as long as required by Apple's records.</p>
+
+            <h2>Your rights</h2>
+            <ul>
+                <li><strong>Access:</strong> you can see your saved content at any time inside the app.</li>
+                <li><strong>Delete a single item:</strong> delete it from the Saved tab.</li>
+                <li><strong>Delete your account and all associated data:</strong> email <a class="inline" href="mailto:support@kopare.app">support@kopare.app</a> from the address tied to your account. Deletion is permanent and typically completes within seven days.</li>
+            </ul>
+
+            <h2>Children</h2>
+            <p>SignalScroll is not directed to children under 13, and we do not knowingly collect personal information from them. If you believe a child has provided personal information, contact us and we will delete it.</p>
+
+            <h2>Security</h2>
+            <p>Data in transit is encrypted using TLS. Data at rest in Firebase and our AI providers is encrypted on disk. Only your account can read your saved content. No system is perfect; if we ever discover a breach affecting your data, we'll notify you in line with applicable law.</p>
+
+            <h2>International users</h2>
+            <p>SignalScroll's backend runs in Google Cloud regions in the United States. By using the app you consent to your information being processed in the United States and other countries where our service providers operate.</p>
+
+            <h2>Changes to this policy</h2>
+            <p>If this policy materially changes, we'll update the effective date at the top and surface the change in-app on next launch. Continued use of the app after the change is treated as acceptance of the updated policy.</p>
+
+            <h2>Contact</h2>
+            <p>Privacy questions, deletion requests, or anything else: <a class="inline" href="mailto:support@kopare.app">support@kopare.app</a>.</p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 SignalScroll. Hosted on kopare.app.</p>
+            <div class="links">
+                <a href="signalscroll-privacy.html">Privacy</a>
+                <a href="signalscroll-terms.html">Terms</a>
+                <a href="signalscroll.html">SignalScroll</a>
+                <a href="index.html">Kopare</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

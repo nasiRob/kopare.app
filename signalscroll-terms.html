@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SignalScroll Terms of Use — the agreement between you and us for using the app.">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="SignalScroll">
+
+    <title>SignalScroll — Terms of Use</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0A0A0C;
+            --hairline: rgba(255, 255, 255, 0.06);
+            --hairline-strong: rgba(255, 255, 255, 0.10);
+            --surface: rgba(255, 255, 255, 0.025);
+            --surface-hover: rgba(255, 255, 255, 0.045);
+
+            --text-primary: rgba(255, 255, 255, 0.96);
+            --text-secondary: rgba(255, 255, 255, 0.66);
+            --text-tertiary: rgba(255, 255, 255, 0.38);
+            --text-quaternary: rgba(255, 255, 255, 0.22);
+
+            --accent: #9DA8E8;
+
+            --xs: 4px;
+            --s: 8px;
+            --m: 12px;
+            --l: 16px;
+            --xl: 24px;
+            --xxl: 32px;
+            --xxxl: 48px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            background: var(--bg);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.6;
+        }
+
+        ::selection { background: rgba(157, 168, 232, 0.35); color: var(--text-primary); }
+
+        a { color: inherit; text-decoration: none; }
+
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 0 var(--xl);
+        }
+
+        .site-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(10, 10, 12, 0.78);
+            backdrop-filter: saturate(160%) blur(18px);
+            -webkit-backdrop-filter: saturate(160%) blur(18px);
+            border-bottom: 1px solid var(--hairline);
+        }
+
+        .site-nav .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 14px;
+            padding-bottom: 14px;
+        }
+
+        .wordmark {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            color: var(--text-primary);
+        }
+
+        .wordmark .mark {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            background: #101014;
+            border: 1px solid var(--hairline-strong);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wordmark .mark svg { width: 14px; height: 14px; }
+
+        .nav-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-radius: 999px;
+            border: 1px solid var(--hairline-strong);
+            transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .nav-cta:hover {
+            color: var(--text-primary);
+            background: var(--surface);
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+
+        main { padding: 64px 0 96px; }
+
+        .eyebrow {
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--text-tertiary);
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: var(--l);
+        }
+
+        .eyebrow .dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 12px rgba(157, 168, 232, 0.6);
+        }
+
+        h1 {
+            font-size: 40px;
+            line-height: 1.1;
+            font-weight: 600;
+            letter-spacing: -1.2px;
+            color: var(--text-primary);
+            margin-bottom: var(--m);
+        }
+
+        .effective {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            margin-bottom: var(--xxl);
+        }
+
+        .lede {
+            font-size: 17px;
+            line-height: 1.65;
+            color: var(--text-secondary);
+            padding: var(--l) var(--xl);
+            border: 1px solid var(--hairline);
+            border-radius: 14px;
+            background: var(--surface);
+            margin-bottom: var(--xxxl);
+        }
+
+        .lede strong { color: var(--text-primary); font-weight: 600; }
+
+        h2 {
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: -0.4px;
+            color: var(--text-primary);
+            margin-top: var(--xxxl);
+            margin-bottom: var(--m);
+        }
+
+        h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: var(--xl);
+            margin-bottom: var(--xs);
+        }
+
+        p, ul {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: var(--m);
+        }
+
+        ul { padding-left: 22px; }
+
+        li { margin-bottom: 6px; }
+
+        strong { color: var(--text-primary); font-weight: 600; }
+
+        a.inline {
+            color: var(--accent);
+            border-bottom: 1px solid rgba(157, 168, 232, 0.3);
+        }
+
+        a.inline:hover { border-bottom-color: var(--accent); }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-tertiary);
+            margin-bottom: var(--xl);
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover { color: var(--text-primary); }
+
+        footer {
+            padding: 40px 0 56px;
+            border-top: 1px solid var(--hairline);
+        }
+
+        footer .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--l);
+        }
+
+        footer p, footer a {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            line-height: 1.6;
+        }
+
+        footer a:hover { color: var(--text-secondary); }
+
+        footer .links { display: flex; gap: var(--xl); }
+
+        @media (max-width: 480px) {
+            .container { padding: 0 var(--l); }
+            h1 { font-size: 32px; letter-spacing: -1px; }
+            .lede { padding: var(--m) var(--l); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition-duration: 0.01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-nav">
+        <div class="container">
+            <a href="signalscroll.html" class="wordmark">
+                <span class="mark" aria-hidden="true">
+                    <svg viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M736 276H438C309 276 224 345 224 445C224 526 281 578 380 598L592 638C692 657 748 709 748 790C748 890 664 958 536 958H240" stroke="#F5F5F2" stroke-width="88" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                SignalScroll
+            </a>
+            <a href="signalscroll.html" class="nav-cta">Back to SignalScroll</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <a href="signalscroll.html" class="back-link">&larr; Back to SignalScroll</a>
+            <span class="eyebrow"><span class="dot"></span>Legal</span>
+            <h1>Terms of Use</h1>
+            <p class="effective">Effective Date: May 19, 2026</p>
+
+            <div class="lede">
+                <p><strong>These Terms govern your use of SignalScroll.</strong> By downloading, installing, or using the app, you agree to be bound by them. If you don't agree, don't use the app.</p>
+            </div>
+
+            <h2>1. The service</h2>
+            <p>SignalScroll is an iOS application that generates AI-powered learning feeds and saves user-curated content. The app is operated by Kopare ("we", "our", "us"). Throughout these Terms, "you" means the person using SignalScroll on a device they own or control.</p>
+
+            <h2>2. Eligibility</h2>
+            <p>You must be at least 13 years old to use SignalScroll. If you are under the age of majority in your jurisdiction, you may use the app only with permission from a parent or legal guardian who agrees to these Terms.</p>
+
+            <h2>3. License to use the app</h2>
+            <p>Subject to your compliance with these Terms, we grant you a personal, non-exclusive, non-transferable, revocable license to install and use SignalScroll on Apple-branded devices you own or control, solely for your own personal, non-commercial use. All rights not expressly granted are reserved.</p>
+            <p>You may not copy, modify, distribute, sell, lease, reverse engineer, or attempt to extract the source code of the app, except where applicable law permits despite this restriction.</p>
+
+            <h2>4. Acceptable use</h2>
+            <p>You agree not to use SignalScroll to:</p>
+            <ul>
+                <li>Submit content that is illegal, infringing, harmful, hateful, harassing, or designed to exploit minors.</li>
+                <li>Attempt to bypass entitlement checks, fair-use limits, or any other security or access controls.</li>
+                <li>Use automated systems to send requests at a rate that interferes with normal operation.</li>
+                <li>Use the app to generate or distribute content that violates someone else's rights or privacy.</li>
+                <li>Resell, sublicense, or commercially exploit the app or its output.</li>
+            </ul>
+            <p>We may suspend or terminate accounts that violate this section.</p>
+
+            <h2>5. SignalScroll+ subscription</h2>
+
+            <h3>How it works</h3>
+            <p>SignalScroll+ is an optional auto-renewing subscription that unlocks unlimited topics, unlimited depth, the Stay Current live-web mode, and unlimited saved scrolls. The free tier remains usable without a subscription.</p>
+
+            <h3>Price and billing</h3>
+            <p>SignalScroll+ is offered at <strong>$7.99 USD per month</strong> (Apple Tier 8 — local prices may vary by currency). Payment is charged to your Apple ID at confirmation of purchase.</p>
+
+            <h3>Auto-renewal</h3>
+            <p>Your subscription automatically renews at the same price unless you cancel at least 24 hours before the end of the current billing period. Your account is charged for renewal within 24 hours prior to the end of the current period.</p>
+
+            <h3>Managing or canceling</h3>
+            <p>You can manage your subscription and turn off auto-renewal at any time in <strong>Settings → [your name] → Subscriptions</strong> on your iOS device. Cancellation takes effect at the end of the current billing period. Any unused portion of a free trial (if offered) is forfeited when you purchase a subscription.</p>
+
+            <h3>Refunds</h3>
+            <p>Refund requests are handled by Apple in accordance with Apple's policies. We do not process refunds directly. To request a refund, visit <a class="inline" href="https://reportaproblem.apple.com" target="_blank" rel="noopener">reportaproblem.apple.com</a>.</p>
+
+            <h3>Price changes</h3>
+            <p>If we change the price of an active subscription, Apple will notify you in advance and you will be asked to confirm the new price before it takes effect. You can cancel before the change instead of accepting it.</p>
+
+            <h2>6. Your content</h2>
+            <p>SignalScroll lets you submit topics and save cards and scrolls. You retain all rights you already had in that content. By submitting topics, you grant us a limited license to process them through our backend and AI providers solely to generate and deliver the feed back to you.</p>
+            <p>You are responsible for the topics you submit. Don't submit confidential information, personal data about other people, or content you don't have the right to use.</p>
+
+            <h2>7. AI-generated output</h2>
+            <p>Feed cards are generated by third-party AI models. AI can be wrong, outdated, or biased. <strong>Do not rely on SignalScroll output for medical, legal, financial, or other professional advice.</strong> Treat the feed as a starting point for your own thinking, not a finished answer.</p>
+            <p>Output similar or identical to yours may be produced for other users. You do not have exclusivity over generated content.</p>
+
+            <h2>8. Stay Current and live web content</h2>
+            <p>If you enable Stay Current, generated cards may incorporate information from third-party websites returned by a web search provider. We do not control and are not responsible for the accuracy, legality, or availability of third-party web content.</p>
+
+            <h2>9. Intellectual property</h2>
+            <p>The SignalScroll app, its visual design, brand, and all underlying software are owned by Kopare and protected by intellectual property laws. Nothing in these Terms transfers ownership of the app to you.</p>
+
+            <h2>10. Termination</h2>
+            <p>You can stop using the app at any time and delete your account by contacting <a class="inline" href="mailto:support@kopare.app">support@kopare.app</a>. We can suspend or terminate your access if you breach these Terms or use the app in a way that may cause harm to us, other users, or third parties. Termination does not affect rights or obligations that accrued before it.</p>
+
+            <h2>11. Disclaimer of warranties</h2>
+            <p>SIGNALSCROLL IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR ACCURACY OF AI-GENERATED CONTENT. WE DO NOT WARRANT THAT THE APP WILL BE UNINTERRUPTED OR ERROR-FREE.</p>
+
+            <h2>12. Limitation of liability</h2>
+            <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, KOPARE AND ITS AFFILIATES WILL NOT BE LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS, REVENUE, DATA, OR GOODWILL ARISING OUT OF YOUR USE OF THE APP. OUR TOTAL LIABILITY UNDER THESE TERMS WILL NOT EXCEED THE GREATER OF (A) AMOUNTS YOU PAID FOR SIGNALSCROLL+ IN THE 12 MONTHS BEFORE THE CLAIM AROSE OR (B) USD $50.</p>
+
+            <h2>13. Indemnification</h2>
+            <p>You agree to indemnify and hold harmless Kopare and its affiliates from any claim, loss, or expense (including reasonable legal fees) arising from your misuse of SignalScroll or violation of these Terms.</p>
+
+            <h2>14. Governing law and disputes</h2>
+            <p>These Terms are governed by the laws of the State of California, USA, without regard to its conflict-of-laws principles. Any dispute that cannot be resolved informally must be brought in the state or federal courts located in California, and you consent to their jurisdiction.</p>
+
+            <h2>15. Apple-specific terms</h2>
+            <p>The following section applies because SignalScroll is licensed through the Apple App Store. In the event of any conflict between this section and the rest of these Terms, this section controls for App Store users.</p>
+            <ul>
+                <li>These Terms are between you and Kopare only — not with Apple. Apple is not responsible for the app or its content.</li>
+                <li>Your license to use the app is limited to use on Apple-branded products that you own or control, as permitted by the Usage Rules in the Apple Media Services Terms.</li>
+                <li>Apple has no obligation to provide maintenance or support for SignalScroll.</li>
+                <li>If the app fails to conform to any applicable warranty, you may notify Apple, and Apple will refund the purchase price (if any) to you. To the maximum extent permitted by law, Apple has no other warranty obligation with respect to the app.</li>
+                <li>Apple is not responsible for addressing any claims you or any third party have relating to the app, including product liability, regulatory compliance, or consumer-protection claims.</li>
+                <li>Apple and Apple's subsidiaries are third-party beneficiaries of these Terms and, upon your acceptance, have the right (and are deemed to have accepted the right) to enforce these Terms against you.</li>
+            </ul>
+
+            <h2>16. Changes to these Terms</h2>
+            <p>We may update these Terms from time to time. Material changes will be surfaced in-app on next launch and the effective date above will be updated. Continued use of the app after the change constitutes acceptance.</p>
+
+            <h2>17. Contact</h2>
+            <p>Questions about these Terms or the app: <a class="inline" href="mailto:support@kopare.app">support@kopare.app</a>.</p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 SignalScroll. Hosted on kopare.app.</p>
+            <div class="links">
+                <a href="signalscroll-privacy.html">Privacy</a>
+                <a href="signalscroll-terms.html">Terms</a>
+                <a href="signalscroll.html">SignalScroll</a>
+                <a href="index.html">Kopare</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
