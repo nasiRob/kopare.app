@@ -95,6 +95,16 @@
                         <h3>Expense Tracking</h3>
                         <p>Track and split shared expenses with transparency and clarity.</p>
                     </div>
+                    <div class="feature-card animate-on-scroll">
+                        <div class="feature-icon">🎒</div>
+                        <h3>Items Between Homes</h3>
+                        <p>Track lunchboxes, sports gear, and homework folders as they move between houses.</p>
+                    </div>
+                    <div class="feature-card animate-on-scroll">
+                        <div class="feature-icon">⌚️</div>
+                        <h3>Apple Watch for Kids</h3>
+                        <p>A simple companion app so kids can see their schedule and what to bring, right from their wrist.</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -105,16 +115,46 @@
                 <h2 class="animate-on-scroll">See It In Action</h2>
                 <div class="screenshots-grid">
                     <div class="screenshot-item animate-on-scroll">
+                        <img src="assets/dashboard-view.png" alt="Dashboard View">
+                        <p>Daily Dashboard</p>
+                    </div>
+                    <div class="screenshot-item animate-on-scroll">
                         <img src="assets/calendar-view.png" alt="Calendar View">
                         <p>Shared Calendar</p>
+                    </div>
+                    <div class="screenshot-item animate-on-scroll">
+                        <img src="assets/items-view.png" alt="Items View">
+                        <p>Items Between Homes</p>
+                    </div>
+                    <div class="screenshot-item animate-on-scroll">
+                        <img src="assets/messages-view.png" alt="Messages View">
+                        <p>Organized Messaging</p>
                     </div>
                     <div class="screenshot-item animate-on-scroll">
                         <img src="assets/expenses-view.png" alt="Expenses View">
                         <p>Expense Tracking</p>
                     </div>
-                    <div class="screenshot-item animate-on-scroll">
-                        <img src="assets/messages-view.png" alt="Messages View">
-                        <p>Organized Messaging</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Apple Watch Section -->
+        <section class="watch-section">
+            <div class="container">
+                <h2 class="animate-on-scroll">Built for Apple Watch</h2>
+                <p class="watch-subtitle animate-on-scroll">A kid-friendly companion app — your child can see their schedule, what's coming up, and what items to bring, right from their wrist.</p>
+                <div class="watch-grid">
+                    <div class="watch-item animate-on-scroll">
+                        <img src="assets/watch-day-view.png" alt="Watch Day View">
+                        <p>Today's Schedule</p>
+                    </div>
+                    <div class="watch-item animate-on-scroll">
+                        <img src="assets/watch-calendar-view.png" alt="Watch Calendar View">
+                        <p>Calendar at a Glance</p>
+                    </div>
+                    <div class="watch-item animate-on-scroll">
+                        <img src="assets/watch-items-view.png" alt="Watch Items View">
+                        <p>Items to Bring</p>
                     </div>
                 </div>
             </div>
@@ -163,7 +203,7 @@
                     if (entry.isIntersecting) {
                         // Add staggered delay for grid items
                         const parent = entry.target.parentElement;
-                        if (parent && (parent.classList.contains('features-grid') || parent.classList.contains('screenshots-grid'))) {
+                        if (parent && (parent.classList.contains('features-grid') || parent.classList.contains('screenshots-grid') || parent.classList.contains('watch-grid'))) {
                             const siblings = Array.from(parent.children);
                             const itemIndex = siblings.indexOf(entry.target);
                             entry.target.style.transitionDelay = `${itemIndex * 0.1}s`;
