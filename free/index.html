@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kopare is completely free for both parents, forever. No subscription, no paywall, no data sold. Here is the honest answer to why.">
+
+    <!-- iOS Universal Links & App Meta Tags -->
+    <meta name="apple-itunes-app" content="app-id=6749215322">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Kopare">
+
+    <title>Why Kopare is free — Kopare</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Figtree:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../home.css">
+    <style>
+      /* ---------- /free page ---------- */
+      .free-hero { padding: 78px 0 30px; text-align: center; }
+      .free-hero .eyebrow-pill { margin-bottom: 26px; }
+      .free-hero h1 {
+        font-family: 'Newsreader', serif;
+        font-weight: 500;
+        font-size: 56px;
+        line-height: 1.06;
+        letter-spacing: -1px;
+        color: var(--navy);
+        margin: 0 auto 20px;
+        max-width: 640px;
+      }
+      .free-hero h1 .accent { font-style: italic; color: var(--coral); }
+      .free-hero .free-lead {
+        font-size: 19px;
+        line-height: 1.6;
+        color: var(--body);
+        max-width: 520px;
+        margin: 0 auto;
+      }
+
+      /* Promise rail */
+      .promises { padding: 44px 0 26px; }
+      .promises .rail {
+        border-top: 1px solid rgba(34, 66, 79, 0.10);
+        border-bottom: 1px solid rgba(34, 66, 79, 0.10);
+        padding: 32px 0;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+        text-align: center;
+      }
+      .promises .stat { font-family: 'Newsreader', serif; font-size: 34px; color: var(--navy); font-weight: 500; }
+      .promises .stat-cap { color: var(--caption); font-size: 14.5px; margin-top: 4px; }
+      .promises .rail > div:nth-child(2) {
+        border-left: 1px solid rgba(34, 66, 79, 0.10);
+        border-right: 1px solid rgba(34, 66, 79, 0.10);
+      }
+
+      /* Letter */
+      .letter { padding: 46px 0 70px; }
+      .letter-card {
+        background: var(--card-bg);
+        border: 1px solid var(--hairline-soft);
+        border-radius: 30px;
+        padding: 64px 72px;
+        max-width: 760px;
+        margin: 0 auto;
+        box-shadow: 0 18px 44px rgba(20, 35, 42, 0.06);
+        animation: kRise 0.7s ease-out both;
+      }
+      .letter-card .section-eyebrow { margin-bottom: 22px; }
+      .letter-card h2 {
+        font-family: 'Newsreader', serif;
+        font-weight: 500;
+        font-size: 29px;
+        line-height: 1.18;
+        letter-spacing: -0.3px;
+        color: var(--navy);
+        margin: 42px 0 14px;
+      }
+      .letter-card h2:first-of-type { margin-top: 0; }
+      .letter-card p {
+        color: var(--body);
+        font-size: 16.5px;
+        line-height: 1.75;
+        margin-bottom: 16px;
+      }
+      .letter-card p strong { color: var(--navy); font-weight: 600; }
+      .letter-card .pull {
+        font-family: 'Newsreader', serif;
+        font-style: italic;
+        font-weight: 500;
+        font-size: 24px;
+        line-height: 1.4;
+        color: var(--coral-deep);
+        border-left: 3px solid var(--coral);
+        padding: 6px 0 6px 24px;
+        margin: 30px 0;
+      }
+      .letter-sign {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 1px solid var(--hairline);
+      }
+      .letter-sign img { height: 46px; width: 46px; border-radius: 12px; object-fit: cover; }
+      .letter-sign .who { line-height: 1.35; }
+      .letter-sign .who .name {
+        font-family: 'Newsreader', serif;
+        font-weight: 600;
+        font-size: 18px;
+        color: var(--navy);
+        display: block;
+      }
+      .letter-sign .who .role { color: var(--caption); font-size: 14px; }
+
+      @media (max-width: 900px) {
+        .free-hero h1 { font-size: 46px; }
+        .letter-card { padding: 48px 40px; }
+      }
+      @media (max-width: 600px) {
+        .free-hero { padding: 54px 0 18px; }
+        .free-hero h1 { font-size: 37px; }
+        .free-hero .free-lead { font-size: 17px; }
+        .promises .rail { grid-template-columns: 1fr; gap: 22px; }
+        .promises .rail > div:nth-child(2) { border: none; padding: 0; }
+        .letter-card { padding: 38px 26px; border-radius: 24px; }
+        .letter-card h2 { font-size: 25px; }
+        .letter-card .pull { font-size: 20px; }
+      }
+    </style>
+</head>
+<body>
+    <!-- Nav -->
+    <nav class="site-nav">
+        <div class="container nav-inner">
+            <a class="brand" href="../index.html" aria-label="Kopare home">
+                <img src="../assets/logo.png" alt="Kopare logo">
+                <span class="wordmark">Kopare</span>
+            </a>
+            <div class="nav-right">
+                <div class="nav-links">
+                    <a href="../index.html#features">Features</a>
+                    <a href="../index.html#how-it-works">How it works</a>
+                    <a href="../index.html#apple-watch">Apple Watch</a>
+                    <a href="./" aria-current="page">Why it's free</a>
+                </div>
+                <a href="https://apps.apple.com/us/app/kopare/id6749215322" class="nav-download">Download</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="free-hero">
+        <div class="container">
+            <div class="eyebrow-pill"><span class="dot"></span> A note from the developer</div>
+            <h1>Why Kopare is <span class="accent">free</span>.</h1>
+            <p class="free-lead">When an app is free, it is worth asking why. Here is the honest answer.</p>
+        </div>
+    </header>
+
+    <!-- Promise rail -->
+    <section class="promises">
+        <div class="container">
+            <div class="rail">
+                <div>
+                    <div class="stat">Free forever</div>
+                    <div class="stat-cap">every feature, both parents</div>
+                </div>
+                <div>
+                    <div class="stat">Never sold</div>
+                    <div class="stat-cap">your data stays your family's</div>
+                </div>
+                <div>
+                    <div class="stat">One person</div>
+                    <div class="stat-cap">built by a co-parent, independently</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Letter -->
+    <section class="letter">
+        <div class="container">
+            <div class="letter-card">
+                <div class="section-eyebrow">The honest answer</div>
+
+                <p>I am a co-parent and an iOS developer. When my own family changed shape, I went looking for an app to keep our schedule, expenses and messages in one place. Every app I found asked for my credit card before I could even see how it worked. Some wanted a subscription from both of us, which meant nothing worked unless my co-parent paid too.</p>
+                <p class="pull">So I built the app I was looking for.</p>
+
+                <h2>Where most apps have costs, Kopare has my time</h2>
+                <p>Co-parenting apps usually charge because they have offices, staff, investors and ad budgets to feed. Kopare has none of those. It is built and maintained by one developer who cares about this problem because I live it too. My cost is time, and I am glad to give it.</p>
+
+                <h2>Free forever</h2>
+                <p>Kopare is free for both parents, with everything included. The calendar, messaging, expense tracking, item tracking, all of it. <strong>No subscription, no trial that expires, no features behind a paywall.</strong></p>
+                <p>And it will stay that way. Free forever is not a launch promotion. It is the reason Kopare exists.</p>
+
+                <h2>Your data is yours</h2>
+                <p>Kopare does not sell your data. Not to advertisers, not to data brokers, not to anyone, ever. Your family's schedule and messages are for your family.</p>
+
+                <h2>Why give it away?</h2>
+                <p>Because the weeks when I needed an app like this were hard enough without a paywall. If Kopare makes another family's handoffs calmer and their weeks easier to plan, that is the return I built it for.</p>
+                <p>If you have questions, ask me anytime. And if Kopare helps your family, a review on the App Store is the nicest thank you there is.</p>
+
+                <div class="letter-sign">
+                    <img src="../assets/logo.png" alt="Kopare logo">
+                    <div class="who">
+                        <span class="name">The developer behind Kopare</span>
+                        <span class="role">Co-parent, iOS developer, one-person team</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="container">
+            <div class="panel">
+                <h2>Try everything. Pay nothing.</h2>
+                <p>Every feature is yours from the moment you download, for both parents. That is the whole pricing page.</p>
+                <a href="https://apps.apple.com/us/app/kopare/id6749215322" class="btn-appstore">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09z"/></svg>
+                    Download on the App Store
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <img src="../assets/logo.png" alt="Kopare logo">
+                <span class="wordmark">Kopare</span>
+            </div>
+            <div class="footer-links">
+                <a href="./">Why it's free</a>
+                <a href="../privacy-policy.html">Privacy</a>
+                <a href="../signalscroll.html">SignalScroll</a>
+                <a href="https://apps.apple.com/us/app/kopare/id6749215322">Support</a>
+            </div>
+            <p class="copyright">© 2026 Kopare. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
