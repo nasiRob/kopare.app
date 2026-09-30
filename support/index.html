@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kopare Support</title>
+<meta name="description" content="Chat with the person who builds Kopare, or pick a common question for a quick answer.">
+<link rel="icon" href="../assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="support.css">
+</head>
+<body class="v-page">
+<div class="v-shell">
+  <header class="v-head">
+    <a class="brand" href="../index.html" aria-label="Kopare home"><img src="../assets/logo.png" alt="">Kopare Support</a>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+  </header>
+
+  <main class="v-body" id="vbody" aria-live="polite">
+    <div class="hello">
+      <h2>Hi, how can we help?</h2>
+      <p>You're talking to the person who builds Kopare. Pick a common question or just type.</p>
+    </div>
+    <div id="thread" style="display:contents"></div>
+    <div class="chips" id="chips"></div>
+    <div id="notices" style="display:contents"></div>
+    <div id="codeSlot" style="display:contents"></div>
+  </main>
+
+  <footer class="composer">
+    <form class="field" id="composerForm" autocomplete="off">
+      <textarea id="composerInput" rows="1" placeholder="Type a message…" aria-label="Message" maxlength="2000" enterkeyhint="send"></textarea>
+      <button class="send" id="sendBtn" type="submit" aria-label="Send"><svg class="i" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+    </form>
+    <div class="fine">Chats are private and stored securely. <a href="../privacy-policy.html">Privacy</a></div>
+  </footer>
+</div>
+<script type="module" src="support.js"></script>
+<noscript><p style="padding:16px">Support chat needs JavaScript. You can reach us from the Kopare app instead.</p></noscript>
+</body>
+</html>
