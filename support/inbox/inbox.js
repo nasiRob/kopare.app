@@ -59,19 +59,22 @@ async function signIn() {
   const provider = new fb.OAuthProvider("apple.com");
   provider.addScope("email"); provider.addScope("name");
   $("gateBtn").disabled = true; $("gateErr").hidden = true;
-  const mobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || matchMedia("(pointer:coarse)").matches && innerWidth < 900;
+  // Popup everywhere, phones included. Redirect sign-in silently fails in
+  // Safari (and Chrome) when the page (kopare.app) and authDomain
+  // (firebaseapp.com) differ: the browser partitions the storage the
+  // redirect result lives in, so you come back signed out. A popup opened
+  // from this tap is allowed on iOS. Redirect is only a last resort.
   try {
-    if (mobile) { await fb.signInWithRedirect(fb.auth, provider); return; }
     await fb.signInWithPopup(fb.auth, provider);
   } catch (e) {
-    if (!mobile && ["auth/popup-blocked", "auth/operation-not-supported-in-this-environment", "auth/web-storage-unsupported"].includes(e.code)) {
+    if (["auth/popup-blocked", "auth/operation-not-supported-in-this-environment"].includes(e.code)) {
       try { await fb.signInWithRedirect(fb.auth, provider); return; } catch (e2) { e = e2; }
     }
     $("gateBtn").disabled = false;
     if (e.code === "auth/popup-closed-by-user" || e.code === "auth/cancelled-popup-request") return;
     $("gateErr").hidden = false;
     $("gateErr").textContent = e.code === "auth/unauthorized-domain" ? "This domain isn't authorised for sign-in yet."
-      : e.code === "auth/operation-not-allowed" ? "Sign in with Apple isn't set up for this project yet." : "Sign-in didn't work. Please try again.";
+      : e.code === "auth/operation-not-allowed" ? "Sign in with Apple isn't set up for this project yet." : `Sign-in didn't work (${e.code || "unknown"}). Please try again.`;
   }
 }
 function signOut() { return fb.signOut(fb.auth); }
