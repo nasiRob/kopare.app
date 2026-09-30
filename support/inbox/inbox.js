@@ -131,7 +131,7 @@ function renderList() {
     if (ch.unreadByAdmin) b.append(el("span", "tag new", ch.linkedUserId ? "New · linked account" : "New"));
     else if (ch.status === "waiting") b.append(el("span", "tag wait", "Waiting on them"));
     else if (ch.status === "closed") b.append(el("span", "tag done", "Closed"));
-    if (ch.blocked) b.append(el("span", "tag blk", "Paused"));
+    if (isPaused(ch)) b.append(el("span", "tag blk", pausedLabel(ch)));
     b.onclick = () => select(ch.id);
     box.append(b);
   }
@@ -161,17 +161,38 @@ function select(id, fromHash) {
 }
 $("backBtn").onclick = () => { $("admin").classList.remove("show-thread"); S.sel = null; history.replaceState(null, "", location.pathname); renderList(); };
 
+// A block is active until blockedUntil passes (rate blocks); admin blocks have no expiry.
+function tsMs(ts) { return !ts ? 0 : ts.toMillis ? ts.toMillis() : ts.toDate ? ts.toDate().getTime() : new Date(ts).getTime(); }
+function isPaused(c) { return !!(c && c.blocked && (!c.blockedUntil || tsMs(c.blockedUntil) > Date.now())); }
+function pausedLabel(c) {
+  if (c.blockedReason === "rate" && c.blockedUntil) return "Paused until " + new Date(tsMs(c.blockedUntil)).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  return "Paused";
+}
+setInterval(() => { if (!$("admin").hidden) { renderList(); if (S.sel) renderHeader(); } }, 30000); // let expired rate blocks clear
+
 function cur() { return S.chats.find((x) => x.id === S.sel); }
 function renderHeader() {
   const c = cur(); if (!c) { $("thName").textContent = "Chat " + (S.sel || "").slice(0, 3).toUpperCase(); return; }
   $("thName").textContent = displayName(c);
   $("thMeta").textContent = c.source === "app" ? "from the app" : "from the web";
+  const paused = isPaused(c);
+  const tag = $("thPaused"); tag.hidden = !paused; tag.textContent = paused ? pausedLabel(c) : "";
+  $("blockBtn").textContent = paused ? "Unblock" : "Block";
   const cb = $("closeBtn"); cb.textContent = c.status === "closed" ? "Reopen chat" : "Close chat";
 }
 function markRead() {
   const c = cur();
   if (c && c.unreadByAdmin) fb.updateDoc(fb.doc(fb.db, "supportChats", S.sel), { unreadByAdmin: false }).catch(() => {});
 }
+$("blockBtn").onclick = async () => {
+  const c = cur(); if (!c) return;
+  const unblock = isPaused(c);
+  if (!unblock && !confirm("They won't be able to send messages until you unblock them.")) return;
+  const data = unblock ? { blocked: false, blockedUntil: fb.deleteField(), blockedReason: fb.deleteField() }
+    : { blocked: true, blockedReason: "admin", blockedUntil: fb.deleteField() };
+  try { await fb.updateDoc(fb.doc(fb.db, "supportChats", S.sel), data); }
+  catch { showReplyErr(unblock ? "Couldn't unblock this chat." : "Couldn't block this chat."); }
+};
 $("closeBtn").onclick = async () => {
   const c = cur(); if (!c) return;
   try { await fb.updateDoc(fb.doc(fb.db, "supportChats", S.sel), { status: c.status === "closed" ? "open" : "closed" }); }
