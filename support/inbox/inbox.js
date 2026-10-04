@@ -11,7 +11,15 @@ const CANNED = [
   ["Still free", "Kopare is free, with nothing locked behind payment. The optional paid tier is just a way to support the app."],
 ];
 
-const S = { chats: [], filter: "open", sel: null, msgs: [], online: false, summaryFor: null };
+const S = { chats: [], filter: "open", sel: null, msgs: [], online: false, summaryFor: null, attach: null, sending: false };
+
+// v4 (SUPPORT-CHAT.md): photos. Stored at supportChatImages/{chatId}/{messageId}.jpg,
+// removed by a bucket lifecycle rule after 7 days. Read with the Storage SDK as the
+// signed-in admin (rules apply), never a public download URL.
+const IMG_MAX = 1600, IMG_BUDGET = 350 * 1024, IMG_LADDER = [0.7, 0.55, 0.42, 0.3];
+const PHOTO_GONE_MS = 8 * 24 * 3600 * 1000;  // lifecycle runs daily: 7 days + up to 1
+const photoCache = new Map();               // path -> { state: "ok"|"gone"|"err"|"loading", url }
+const TOPIC_LABEL = { schedule: "From the schedule builder", feedback: "From Send Feedback" };
 let fb = null, unsubChats = null, unsubMsgs = null, unsubCfg = null;
 
 function gate(title, text, btnLabel, onBtn, err) {
@@ -24,14 +32,16 @@ function gate(title, text, btnLabel, onBtn, err) {
 async function boot() {
   gate("Inbox", "Loading…");
   try {
-    const [appM, authM, fsM, fnM] = await Promise.all([
+    const [appM, authM, fsM, fnM, stM] = await Promise.all([
       import(`${base}/firebase-app.js`), import(`${base}/firebase-auth.js`),
       import(`${base}/firebase-firestore.js`), import(`${base}/firebase-functions.js`),
+      import(`${base}/firebase-storage.js`),
     ]);
     // Separate named app so this session never shares (or clobbers) the visitor's anonymous session.
     const app = appM.initializeApp(firebaseConfig, "inbox");
-    fb = { ...authM, ...fsM, ...fnM };
+    fb = { ...authM, ...fsM, ...fnM, sref: stM.ref, uploadBytes: stM.uploadBytes, getBlob: stM.getBlob, deleteObject: stM.deleteObject };
     fb.auth = authM.getAuth(app); fb.db = fsM.getFirestore(app); fb.fns = fnM.getFunctions(app);
+    fb.storage = stM.getStorage(app);
   } catch (e) {
     console.error(e);
     return gate("Can't load", "The chat service didn't load. Check your connection.", "Reload", () => location.reload());
@@ -128,6 +138,7 @@ function renderList() {
     const b = el("button", "conv" + (S.sel === ch.id ? " sel" : "")); b.type = "button";
     const top = el("div", "top"); top.append(el("b", null, displayName(ch)), el("span", null, ago(ch.lastMessageAt)));
     b.append(top, el("p", null, ch.lastMessagePreview || ""));
+    if (TOPIC_LABEL[ch.faqTopic]) b.append(el("span", "tag topic", ch.faqTopic));
     if (ch.unreadByAdmin) b.append(el("span", "tag new", ch.linkedUserId ? "New · linked account" : "New"));
     else if (ch.status === "waiting") b.append(el("span", "tag wait", "Waiting on them"));
     else if (ch.status === "closed") b.append(el("span", "tag done", "Closed"));
@@ -146,11 +157,13 @@ window.addEventListener("hashchange", () => { if (!$("admin").hidden) openFromHa
 
 function select(id, fromHash) {
   if (unsubMsgs) unsubMsgs();
+  if (S.sel !== id) clearPhotos();
   S.sel = id; S.msgs = [];
   if (!fromHash) history.replaceState(null, "", "#chat=" + encodeURIComponent(id));
   $("noSel").hidden = true; $("threadWrap").hidden = false;
   $("admin").classList.add("show-thread");
   $("replyErr").hidden = true;
+  clearAttach();
   renderList(); renderHeader(); renderCanned();
   const q = fb.query(fb.collection(fb.db, "supportChats", id, "messages"), fb.orderBy("createdAt", "asc"));
   unsubMsgs = fb.onSnapshot(q, (s) => {
@@ -179,6 +192,10 @@ function renderHeader() {
   const tag = $("thPaused"); tag.hidden = !paused; tag.textContent = paused ? pausedLabel(c) : "";
   $("blockBtn").textContent = paused ? "Unblock" : "Block";
   const cb = $("closeBtn"); cb.textContent = c.status === "closed" ? "Reopen chat" : "Close chat";
+  // Photos only for chats linked to an app account: the web visitor page is text-only.
+  const canAttach = !!c.linkedUserId;
+  $("attachBtn").hidden = !canAttach;
+  if (!canAttach) clearAttach();
 }
 function markRead() {
   const c = cur();
@@ -204,11 +221,14 @@ function renderMsgs() {
   const box = $("tMsgs"), near = box.scrollHeight - box.scrollTop - box.clientHeight < 120;
   const f = document.createDocumentFragment();
   const c = cur();
-  if (c && c.faqTopic) f.append(el("div", "sys", `Last quick reply tapped: ${c.faqTopic}`));
+  // v4: where the conversation started, derived from faqTopic (never message fields).
+  if (c && TOPIC_LABEL[c.faqTopic]) { if (S.msgs.length) f.append(el("div", "origin", TOPIC_LABEL[c.faqTopic])); }
+  else if (c && c.faqTopic) f.append(el("div", "sys", `Last quick reply tapped: ${c.faqTopic}`));
   for (const m of S.msgs) {
     if (m.sender === "system") { f.append(el("div", "sys", m.text)); continue; }
     const mine = m.sender === "admin";
-    f.append(el("div", "msg " + (mine ? "me" : "them"), m.text), el("div", "who" + (mine ? " r" : ""), `${mine ? "You" : displayName(c || { id: S.sel })} · ${fmt(m.createdAt)}`));
+    const bubble = m.image && m.image.path ? photoBubble(m, mine) : el("div", "msg " + (mine ? "me" : "them"), m.text);
+    f.append(bubble, el("div", "who" + (mine ? " r" : ""), `${mine ? "You" : displayName(c || { id: S.sel })} · ${fmt(m.createdAt)}`));
   }
   if (!S.msgs.length) f.append(el("div", "sys", "No messages yet."));
   box.replaceChildren(f);
@@ -226,12 +246,22 @@ function renderCanned() {
 function showReplyErr(t) { const e = $("replyErr"); e.hidden = !t; e.textContent = t || ""; }
 const ri = $("replyInput");
 function autosize() { ri.style.height = "auto"; ri.style.height = Math.min(ri.scrollHeight, 120) + "px"; }
-ri.addEventListener("input", autosize);
+ri.addEventListener("input", () => { autosize(); updateSendState(); });
+// A photo needs a caption (old app builds can't show photos; the text is what they see).
+function updateSendState() {
+  const needsCaption = !!S.attach && !ri.value.trim();
+  $("sendBtn").disabled = needsCaption || S.sending;
+  $("captionHint").hidden = !needsCaption;
+}
 ri.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); $("replyForm").requestSubmit(); } });
 $("replyForm").onsubmit = async (e) => {
   e.preventDefault();
-  const text = ri.value.trim(); if (!text || !S.sel) return;
+  const text = ri.value.trim(); const att = S.attach;
+  if ((!text && !att) || !S.sel || S.sending) return;
+  // Kopare 8.7 and earlier read only `text`: a photo-only reply would be an empty bubble there.
+  if (att && !text) { updateSendState(); return; }
   showReplyErr("");
+  if (att) return sendPhoto(S.sel, text, att);
   ri.value = ""; autosize();
   try {
     await fb.addDoc(fb.collection(fb.db, "supportChats", S.sel, "messages"), { sender: "admin", authorUid: fb.auth.currentUser.uid, text, createdAt: fb.serverTimestamp() });
@@ -240,6 +270,131 @@ $("replyForm").onsubmit = async (e) => {
     showReplyErr("That didn't send. Try again.");
   }
 };
+
+// ---------- Photos (v4) ----------
+// Upload first, then create the message with image {path, width, height}; a failed
+// create deletes the upload. The rules pin the path to this chat and message id.
+async function sendPhoto(chatId, text, att) {
+  S.sending = true; updateSendState();
+  const msgRef = fb.doc(fb.collection(fb.db, "supportChats", chatId, "messages"));
+  const path = `supportChatImages/${chatId}/${msgRef.id}.jpg`;
+  const objRef = fb.sref(fb.storage, path);
+  try {
+    await fb.uploadBytes(objRef, att.blob, { contentType: "image/jpeg" });
+  } catch (err) {
+    S.sending = false; updateSendState();
+    return showReplyErr("The photo didn't upload. Try again.");
+  }
+  try {
+    await fb.setDoc(msgRef, { sender: "admin", authorUid: fb.auth.currentUser.uid, text, createdAt: fb.serverTimestamp(),
+      image: { path, width: att.width, height: att.height } });
+    setPhoto(path, { state: "ok", url: URL.createObjectURL(att.blob) });
+    ri.value = ""; autosize(); clearAttach();
+  } catch (err) {
+    fb.deleteObject(objRef).catch(() => {});
+    showReplyErr("That didn't send. Try again.");
+  } finally { S.sending = false; updateSendState(); }
+}
+
+// Resize in the browser: 1600 px long edge, JPEG walking down to ~350 KB.
+async function resizeToJpeg(file) {
+  const bmp = await createImageBitmap(file, { imageOrientation: "from-image" });
+  const scale = Math.min(1, IMG_MAX / Math.max(bmp.width, bmp.height));
+  const width = Math.max(1, Math.round(bmp.width * scale)), height = Math.max(1, Math.round(bmp.height * scale));
+  const canvas = document.createElement("canvas"); canvas.width = width; canvas.height = height;
+  const ctx = canvas.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, width, height);
+  ctx.drawImage(bmp, 0, 0, width, height); bmp.close && bmp.close();
+  let blob = null;
+  for (const q of IMG_LADDER) {
+    blob = await new Promise((r) => canvas.toBlob(r, "image/jpeg", q));
+    if (blob && blob.size <= IMG_BUDGET) break;
+  }
+  if (!blob || blob.size >= 2 * 1024 * 1024) throw new Error("too-big");
+  return { blob, width, height };
+}
+
+$("attachBtn").onclick = () => $("attachInput").click();
+$("attachInput").onchange = async (e) => {
+  const file = e.target.files && e.target.files[0]; e.target.value = "";
+  if (!file) return;
+  showReplyErr("");
+  try {
+    const r = await resizeToJpeg(file);
+    clearAttach();
+    S.attach = { ...r, name: file.name, url: URL.createObjectURL(r.blob) };
+    $("attachThumb").src = S.attach.url;
+    $("attachLabel").textContent = `${file.name} · resized to ${Math.max(r.width, r.height)} px · removed after 7 days`;
+    $("attachPrev").hidden = false;
+    ri.placeholder = "Add a caption…"; ri.focus(); updateSendState();
+  } catch { showReplyErr("That file couldn't be read as a photo."); }
+};
+$("attachRemove").onclick = () => clearAttach();
+function clearAttach() {
+  if (S.attach && S.attach.url) URL.revokeObjectURL(S.attach.url);
+  S.attach = null; $("attachPrev").hidden = true; $("attachThumb").removeAttribute("src"); ri.placeholder = "Reply…";
+  updateSendState();
+}
+
+// A photo bubble sized from the stored width/height; "Photo removed" once expired.
+function photoBubble(m, mine) {
+  const img = m.image, w = img.width || 3, h = img.height || 4;
+  const created = m.createdAt ? (m.createdAt.toDate ? m.createdAt.toDate() : new Date(m.createdAt)).getTime() : Date.now();
+  let entry = photoCache.get(img.path);
+  if (!entry && Date.now() - created > PHOTO_GONE_MS) { entry = { state: "gone" }; setPhoto(img.path, entry); }
+  if (entry && entry.state === "gone") {
+    const b = el("div", "msg expired " + (mine ? "me" : "them"));
+    b.style.aspectRatio = `${w} / ${h}`; b.style.width = "min(62%,320px)"; b.style.maxHeight = "260px";
+    b.append(el("b", null, "Photo removed"), el("span", null, "Photos are kept for 7 days."));
+    if (m.text) b.append(el("span", null, m.text));
+    return b;
+  }
+  const b = el("div", "msg photo " + (mine ? "me" : "them"));
+  const ph = el("button", "ph"); ph.type = "button"; ph.style.aspectRatio = `${w} / ${h}`; ph.setAttribute("aria-label", "Open photo");
+  if (entry && entry.state === "ok") {
+    const i = el("img"); i.src = entry.url; i.alt = "Photo"; ph.append(i);
+    ph.onclick = () => openLightbox(entry.url);
+  } else if (entry && entry.state === "err") {
+    ph.classList.add("ph-err"); ph.textContent = "Couldn't load. Click to retry";
+    ph.onclick = () => { setPhoto(img.path, { state: "retry" }); photoCache.delete(img.path); renderMsgs(); };
+  } else {
+    loadPhoto(img.path);
+  }
+  b.append(ph);
+  if (m.text) b.append(el("div", "cap", m.text));
+  return b;
+}
+// Object URLs are revoked when replaced and when switching chats.
+function setPhoto(path, entry) {
+  const prev = photoCache.get(path);
+  if (prev && prev.url && prev.url !== entry.url) URL.revokeObjectURL(prev.url);
+  photoCache.set(path, entry);
+}
+function clearPhotos() {
+  for (const e of photoCache.values()) if (e.url) URL.revokeObjectURL(e.url);
+  photoCache.clear();
+  document.querySelectorAll(".lightbox").forEach((x) => x.remove());
+}
+async function loadPhoto(path) {
+  if (photoCache.has(path)) return;
+  photoCache.set(path, { state: "loading" });
+  try {
+    const blob = await fb.getBlob(fb.sref(fb.storage, path));
+    if (!photoCache.has(path)) return;  // the chat was switched meanwhile
+    setPhoto(path, { state: "ok", url: URL.createObjectURL(blob) });
+  } catch (e) {
+    if (!photoCache.has(path)) return;
+    setPhoto(path, { state: e && e.code === "storage/object-not-found" ? "gone" : "err" });
+  }
+  renderMsgs();
+}
+function openLightbox(url) {
+  const lb = el("div", "lightbox"); lb.setAttribute("role", "dialog"); lb.setAttribute("aria-label", "Photo");
+  const i = el("img"); i.src = url; i.alt = "Photo"; lb.append(i);
+  const close = () => { lb.remove(); document.removeEventListener("keydown", esc); };
+  const esc = (e) => { if (e.key === "Escape") close(); };
+  lb.onclick = close; document.addEventListener("keydown", esc);
+  document.body.append(lb);
+}
 
 // ---------- Account panel ----------
 // Rendered into the desktop sidebar (#acct) and, below 900px, a collapsible section (#acctM).
@@ -254,6 +409,16 @@ function accountViews(box, r, state) {
   kv("Name", r.name); kv("Signed up", fmtDate(r.signedUpAt)); kv("App", r.lastAppVersion);
   kv("Calendars", cals.length ? cals.map((c) => `${c.memberCount} member${c.memberCount === 1 ? "" : "s"}`).join(", ") : "0");
   kv("Events", r.eventCount);
+  // v4: what they had set up in the schedule builder (inbox only; never in their chat).
+  const setups = r.scheduleFeedback || [];
+  if (setups.length) {
+    const h = el("h3", null, "What they had set up"); h.style.marginTop = "16px"; box.append(h);
+    setups.forEach((x) => {
+      const d = el("div", "setup-note", x.context || "No summary recorded.");
+      d.append(el("small", null, [`"${x.text}"`, fmtDate(x.createdAt), x.appVersion ? `App ${x.appVersion}` : null].filter(Boolean).join(" · ")));
+      box.append(d);
+    });
+  }
   const fbk = r.recentFeedback || [];
   if (fbk.length) {
     const h = el("h3", null, "Recent feedback"); h.style.marginTop = "16px"; box.append(h);

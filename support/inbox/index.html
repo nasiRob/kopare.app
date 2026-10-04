@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../support.css">
+<link rel="stylesheet" href="../support.css?v=4">
 </head>
 <body>
 <div id="gate" class="gate">
@@ -54,14 +54,22 @@
       <div class="reply">
         <div class="canned" id="canned"></div>
         <div id="replyErr" class="sys err" role="alert" hidden></div>
+        <div class="sys" id="captionHint" hidden>Add a line of text. Kopare 8.7 and earlier can't show photos.</div>
+        <div class="attach-prev" id="attachPrev" hidden>
+          <img id="attachThumb" alt="">
+          <span id="attachLabel"></span>
+          <button class="btn sec" id="attachRemove" type="button">Remove</button>
+        </div>
         <form class="field" id="replyForm" autocomplete="off">
+          <button class="attach-btn" id="attachBtn" type="button" aria-label="Attach a photo" title="Attach a photo (app accounts only)" hidden><svg class="i" viewBox="0 0 24 24" style="width:18px;height:18px"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-9 8"/></svg></button>
+          <input type="file" id="attachInput" accept="image/*" hidden>
           <textarea id="replyInput" rows="1" placeholder="Reply…" aria-label="Reply" maxlength="2000"></textarea>
-          <button class="send" type="submit" aria-label="Send"><svg class="i" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+          <button class="send" id="sendBtn" type="submit" aria-label="Send"><svg class="i" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
         </form>
       </div>
     </div>
   </section>
 </div>
-<script type="module" src="inbox.js?v=3"></script>
+<script type="module" src="inbox.js?v=4"></script>
 </body>
 </html>

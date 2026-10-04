@@ -138,7 +138,16 @@ function renderThread() {
     if (m.sender === "system") { f.append(el("div", "sys", m.text)); lastSender = null; continue; }
     const mine = m.sender === "visitor";
     if (!mine && lastSender !== "admin") f.append(el("div", "who", `Kopare Support · ${fmtTime(m.createdAt)}`));
-    f.append(el("div", "msg " + (mine ? "me" : "them"), m.text));
+    // v4: photos live in the app only (Storage reads need a Kopare account).
+    // This page stays text-only; a photo message says where to see it.
+    if (m.hasImage) {
+      const b = el("div", "msg " + (mine ? "me" : "them"));
+      b.append(el("span", "photo-note", "Photo, open the Kopare app to view"));
+      if (m.text && m.text.trim()) b.append(el("div", null, m.text));
+      f.append(b);
+    } else {
+      f.append(el("div", "msg " + (mine ? "me" : "them"), m.text));
+    }
     lastSender = m.sender;
   }
   for (const p of st.pending) f.append(el("div", "msg me pending", p.text));
