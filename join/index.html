@@ -74,13 +74,14 @@
         .store { margin-top: 20px; background: var(--apple-bg); color: var(--apple-ink); }
         .open { margin-top: 10px; background: transparent; color: var(--ink-2); font-size: 15px; font-weight: 600; min-height: 44px; }
         .missing { display: none; }
+        body[data-signin="v1"] .steps-v2, body[data-signin="v2"] .steps-v1 { display: none; }
         .no-code .has-code { display: none; }
         .no-code .missing { display: block; }
         footer { margin-top: 26px; font-size: 13px; color: var(--ink-3); }
         footer a { color: var(--ink-2); text-decoration: none; }
     </style>
 </head>
-<body>
+<body data-signin="v1">
 <main>
     <svg class="mark" viewBox="0 0 224 244" aria-hidden="true">
         <g transform="translate(-388 -266)">
@@ -104,7 +105,17 @@
             This link is missing its code. Ask your co-parent to send the invite again, or use the code from their message.
         </p>
 
-        <ol class="steps">
+        <!-- Two sets of steps, one shown, chosen by data-signin on <body>.
+             "v1": the App Store sign-in screen as of 8.8 (no invite button; the
+             code goes in after setup). "v2": the sign-in revamp (app commit
+             e443ff8c), which adds "I have an invite code" to sign-in.
+             Switch to v2 only once that build is live on the App Store. -->
+        <ol class="steps steps-v1">
+            <li><span class="num">1</span><span><b>Get Kopare</b> from the App Store.</span></li>
+            <li><span class="num">2</span><span><b>Sign in with Apple</b> and finish the quick setup.</span></li>
+            <li><span class="num">3</span><span>Tap <b>Join with an invite code</b> and paste the code. You'll land in the shared calendar.</span></li>
+        </ol>
+        <ol class="steps steps-v2">
             <li><span class="num">1</span><span><b>Get Kopare</b> from the App Store.</span></li>
             <li><span class="num">2</span><span>Open it and tap <b>I have an invite code</b>.</span></li>
             <li><span class="num">3</span><span><b>Paste the code</b>, then sign in with Apple. You'll land in the shared calendar.</span></li>
