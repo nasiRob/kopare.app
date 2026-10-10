@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        // Join links redirect before anything renders, so invitees never see "Page Not Found".
+        (function () {
+            var m = window.location.pathname.match(/^\/join\/([A-Za-z0-9]+)\/?$/);
+            if (m) window.location.replace('/join/?code=' + encodeURIComponent(m[1]));
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-itunes-app" content="app-id=6749215322">
@@ -109,23 +116,6 @@
         // Show current path
         document.getElementById('currentPath').textContent = window.location.pathname;
 
-        // Check if this is a join link that wasn't handled
-        const path = window.location.pathname;
-        const joinMatch = path.match(/\/join\/([A-Z0-9]+)/i);
-
-        if (joinMatch) {
-            // This is a join link - redirect to the proper handler without changing the URL pattern
-            const inviteCode = joinMatch[1];
-
-            // Try to open the app directly
-            const appUrl = `kopare://join/${inviteCode}`;
-            window.location.href = appUrl;
-
-            // If app doesn't open, redirect to join page after a short delay
-            setTimeout(() => {
-                window.location.href = `/join/?code=${inviteCode}`;
-            }, 1500);
-        }
     </script>
 </body>
 </html>

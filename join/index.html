@@ -25,217 +25,140 @@
     <!-- Additional meta tags -->
     <meta name="description" content="Join Kopare - Co-parenting simplified with shared calendars, expense tracking, and messaging.">
     <link rel="icon" type="image/png" href="https://kopare.app/assets/logo.png">
+    <meta name="color-scheme" content="light dark">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --navy: #244563; --coral: #FB9281; --cream: #F7F4F5; --sky: #E4EBF9; --sky-top: #EEF2FB;
+            --ink: var(--navy); --ink-2: rgba(36,69,99,.66); --ink-3: rgba(36,69,99,.45);
+            --card: #ffffff; --line: rgba(36,69,99,.12); --bg-top: var(--sky-top); --bg: var(--sky);
+            --mark: var(--navy); --apple-bg: #000; --apple-ink: #fff;
         }
-
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --ink: var(--cream); --ink-2: rgba(247,244,245,.7); --ink-3: rgba(247,244,245,.45);
+                --card: #17212A; --line: rgba(255,255,255,.12); --bg-top: #121B23; --bg: #0E151B;
+                --mark: var(--cream); --apple-bg: #fff; --apple-ink: #000;
+            }
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            font-family: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--ink); min-height: 100vh; display: flex; justify-content: center; padding: 40px 16px;
+            background:
+                radial-gradient(120% 50% at 50% 12%, rgba(251,146,129,.22) 0%, rgba(251,146,129,0) 60%),
+                linear-gradient(180deg, var(--bg-top) 0%, var(--bg) 100%);
+            background-attachment: fixed;
         }
-
-        .container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px 30px;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            text-align: center;
-        }
-
-        .logo {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-        }
-
-        h1 {
-            color: #2d3748;
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .invite-code {
-            background: #f7fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 20px 0;
-            font-family: 'Courier New', monospace;
-            font-size: 24px;
-            font-weight: bold;
-            color: #667eea;
-            letter-spacing: 2px;
-        }
-
-        p {
-            color: #4a5568;
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-
-        .status {
-            margin: 20px 0;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 14px;
-        }
-
-        .status.loading {
-            background: #edf2f7;
-            color: #4a5568;
-        }
-
-        .status.success {
-            background: #c6f6d5;
-            color: #22543d;
-        }
-
-        .status.error {
-            background: #fed7d7;
-            color: #742a2a;
-        }
-
-        .btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 40px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 16px;
-            margin: 10px 5px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn.secondary {
-            background: #edf2f7;
-            color: #4a5568;
-        }
-
-        .btn.secondary:hover {
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .footer {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #e2e8f0;
-            font-size: 14px;
-            color: #718096;
-        }
+        main { width: 100%; max-width: 440px; text-align: center; }
+        .mark { width: 76px; height: 83px; margin: 8px auto 14px; color: var(--mark);
+            filter: drop-shadow(0 10px 18px rgba(251,146,129,.35)); }
+        h1 { font-size: 28px; font-weight: 700; letter-spacing: -.3px; }
+        .lede { color: var(--ink-2); font-size: 16px; line-height: 1.5; margin: 10px auto 24px; max-width: 360px; }
+        .card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 22px 18px;
+            box-shadow: 0 14px 34px rgba(36,69,99,.10); text-align: left; }
+        .label { font-size: 13px; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: .6px; text-align: center; }
+        .code { margin: 10px 0 14px; display: flex; justify-content: center; gap: 5px; }
+        .code span { flex: 1 1 0; min-width: 0; max-width: 40px; height: 50px; border-radius: 11px; border: 1.5px solid var(--line);
+            display: grid; place-items: center; font-size: 22px; font-weight: 700; background: rgba(255,255,255,.04); }
+        .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 52px;
+            border-radius: 14px; font: inherit; font-size: 17px; font-weight: 700; border: 0; cursor: pointer; text-decoration: none; }
+        .copy { background: var(--coral); color: var(--navy); box-shadow: 0 8px 18px rgba(251,146,129,.38); }
+        .copy.done { background: var(--navy); color: var(--cream); box-shadow: none; }
+        @media (prefers-color-scheme: dark) { .copy.done { background: var(--cream); color: var(--navy); } }
+        .steps { list-style: none; margin: 22px 2px 4px; display: grid; gap: 14px; }
+        .steps li { display: flex; gap: 12px; align-items: flex-start; font-size: 16px; line-height: 1.45; color: var(--ink-2); }
+        .steps b { color: var(--ink); }
+        .num { flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+            font-size: 13px; font-weight: 700; background: rgba(36,69,99,.10); color: var(--ink); }
+        @media (prefers-color-scheme: dark) { .num { background: rgba(255,255,255,.12); } }
+        .store { margin-top: 20px; background: var(--apple-bg); color: var(--apple-ink); }
+        .open { margin-top: 10px; background: transparent; color: var(--ink-2); font-size: 15px; font-weight: 600; min-height: 44px; }
+        .missing { display: none; }
+        .no-code .has-code { display: none; }
+        .no-code .missing { display: block; }
+        footer { margin-top: 26px; font-size: 13px; color: var(--ink-3); }
+        footer a { color: var(--ink-2); text-decoration: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">📱</div>
-        <h1>You've been invited to Kopare!</h1>
+<main>
+    <svg class="mark" viewBox="0 0 224 244" aria-hidden="true">
+        <g transform="translate(-388 -266)">
+            <circle cx="452" cy="302" r="29.5" fill="currentColor"/>
+            <circle cx="548" cy="302" r="29.5" fill="currentColor"/>
+            <rect x="395" y="337.5" width="210" height="165" rx="50.4" fill="currentColor"/>
+            <rect x="413.69" y="356.19" width="172.62" height="127.62" rx="31.71" fill="#FB9281"/>
+            <path transform="translate(500 416.7)" fill="#F7F4F5" d="M0,-14.175 C-28.35,-51.03 -69.174,-18.144 -38.556,15.876 C-27.216,29.484 -7.938,45.36 0,49.896 C7.938,45.36 27.216,29.484 38.556,15.876 C69.174,-18.144 28.35,-51.03 0,-14.175Z"/>
+        </g>
+    </svg>
+    <h1>You're invited to Kopare</h1>
+    <p class="lede">Your co-parent wants to share a calendar with you. It's free.</p>
 
-        <div id="content">
-            <p>You're joining with invite code:</p>
-            <div class="invite-code" id="inviteCode">Loading...</div>
-            <div class="status loading">
-                <div class="spinner"></div>
-                <p>Opening Kopare app...</p>
-            </div>
+    <section class="card">
+        <div class="has-code">
+            <div class="label">Your invite code</div>
+            <div class="code" id="code" aria-live="polite"></div>
+            <button class="btn copy" id="copy" type="button">Copy code</button>
         </div>
+        <p class="missing" style="text-align:center;color:var(--ink-2);line-height:1.5">
+            This link is missing its code. Ask your co-parent to send the invite again, or use the code from their message.
+        </p>
 
-        <div id="fallback" style="display: none;">
-            <p>Kopare makes co-parenting simple with shared calendars, expense tracking, and messaging.</p>
-            <p style="font-size: 14px; color: #718096; margin: 15px 0;">
-                <strong>To open in the app:</strong> Long-press the button below and select "Open in Kopare"
-            </p>
-            <a href="#" id="openApp" class="btn">Open in Kopare</a>
-            <a href="https://apps.apple.com/app/kopare/id6749215322" class="btn secondary">Download Kopare</a>
-        </div>
+        <ol class="steps">
+            <li><span class="num">1</span><span><b>Get Kopare</b> from the App Store.</span></li>
+            <li><span class="num">2</span><span>Open it and tap <b>I have an invite code</b>.</span></li>
+            <li><span class="num">3</span><span><b>Paste the code</b>, then sign in with Apple. You'll land in the shared calendar.</span></li>
+        </ol>
 
-        <div class="footer">
-            <a href="https://kopare.app" style="color: #667eea; text-decoration: none;">kopare.app</a> •
-            <a href="https://kopare.app/privacy-policy.html" style="color: #667eea; text-decoration: none;">Privacy Policy</a>
-        </div>
-    </div>
+        <a class="btn store" href="https://apps.apple.com/app/kopare/id6749215322">Download on the App Store</a>
+        <a class="btn open has-code" id="open" href="#">Already have Kopare? Open it</a>
+    </section>
 
-    <script>
-        // Extract invite code from URL path or query parameter
-        function getInviteCode() {
-            // First try to get from query parameter (?code=CODE)
-            const urlParams = new URLSearchParams(window.location.search);
-            const queryCode = urlParams.get('code');
-            if (queryCode) {
-                return queryCode.toUpperCase();
+    <footer>
+        <a href="https://kopare.app">kopare.app</a> · <a href="https://kopare.app/privacy-policy.html">Privacy Policy</a>
+    </footer>
+</main>
+
+<script>
+    // The code arrives as /join/?code=CODE (from 404.html) or /join/CODE.
+    function inviteCode() {
+        const query = new URLSearchParams(window.location.search).get('code');
+        const raw = query || (window.location.pathname.match(/\/join\/([A-Za-z0-9]+)/) || [])[1] || '';
+        const code = raw.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 12);
+        return code.length >= 6 ? code : null;
+    }
+
+    const code = inviteCode();
+    if (!code) {
+        document.body.classList.add('no-code');
+    } else {
+        const box = document.getElementById('code');
+        for (const ch of code) {
+            const span = document.createElement('span');
+            span.textContent = ch;
+            box.appendChild(span);
+        }
+        box.setAttribute('aria-label', 'Invite code ' + code.split('').join(' '));
+
+        // iOS has no deferred deep link: installing from the App Store loses
+        // this page's URL. Copying is what carries the code across the install.
+        const copy = document.getElementById('copy');
+        copy.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(code);
+            } catch (e) {
+                const t = document.createElement('textarea');
+                t.value = code; document.body.appendChild(t); t.select();
+                document.execCommand('copy'); t.remove();
             }
+            copy.textContent = 'Copied';
+            copy.classList.add('done');
+            setTimeout(() => { copy.textContent = 'Copy code'; copy.classList.remove('done'); }, 2500);
+        });
 
-            // Fall back to path-based code (/join/CODE)
-            const path = window.location.pathname;
-            // Handle both /join/CODE and /join/CODE/ formats
-            const match = path.match(/\/join\/([A-Z0-9]+)/i);
-            return match ? match[1].toUpperCase() : null;
-        }
-
-        // Update the page with invite code
-        const inviteCode = getInviteCode();
-        const inviteCodeElement = document.getElementById('inviteCode');
-        const statusElement = document.querySelector('.status');
-        const fallbackElement = document.getElementById('fallback');
-        const contentElement = document.getElementById('content');
-
-        if (inviteCode) {
-            inviteCodeElement.textContent = inviteCode;
-
-            // Store the invite code in session storage for the app to retrieve later
-            sessionStorage.setItem('kopare_invite_code', inviteCode);
-
-            // Directly redirect to App Store
-            // When user installs and opens app, iOS will trigger the universal link
-            window.location.href = 'https://apps.apple.com/app/kopare/id6749215322';
-
-        } else {
-            // No invite code found
-            inviteCodeElement.textContent = 'Invalid Link';
-            statusElement.className = 'status error';
-            statusElement.innerHTML = '<p>⚠️ No invite code found in the URL</p>';
-
-            setTimeout(() => {
-                window.location.href = 'https://kopare.app';
-            }, 3000);
-        }
-    </script>
+        // The app registers tandemapp:// (Info.plist), not kopare://.
+        document.getElementById('open').href = 'tandemapp://join?code=' + encodeURIComponent(code);
+    }
+</script>
 </body>
 </html>
