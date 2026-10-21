@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kopare Android teaser</title>
+<style>
+  @font-face { font-family: 'Figtree'; font-style: normal; font-weight: 300 900; src: url('fonts/Figtree-normal.woff2') format('woff2'); }
+  @font-face { font-family: 'Newsreader'; font-style: normal; font-weight: 200 800; src: url('fonts/Newsreader-normal.woff2') format('woff2'); }
+  @font-face { font-family: 'Newsreader'; font-style: italic; font-weight: 200 800; src: url('fonts/Newsreader-italic.woff2') format('woff2'); }
+  html, body { margin: 0; background: #000; }
+  body { width: 1080px; height: 1920px; overflow: hidden; }
+  canvas { display: block; width: 1080px; height: 1920px; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+// ------------------------------------------------------------------
+// Kopare "Now on Android" teaser. Everything is a pure function of time
+// (seconds) so a renderer can step frames deterministically.
+// ------------------------------------------------------------------
+const W = 1080, H = 1920, DUR = 12.0;
+const C = {
+  navyDeep: '#16323D', navy: '#22424F', navyAlt: '#2C5364',
+  coral: '#F07E6A', coralL: '#FF9B8A', coralD: '#C15D48',
+  cream: '#F7F3EC', heart: '#FAE8E1', lightBlue: '#C4D7E0',
+  green: '#3DDC84', white: '#FFFFFF',
+};
+
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, p) => a + (b - a) * p;
+const E = {
+  linear: t => t,
+  outExpo: t => t >= 1 ? 1 : 1 - Math.pow(2, -10 * t),
+  outQuint: t => 1 - Math.pow(1 - t, 5),
+  inQuint: t => t * t * t * t * t,
+  inOutQuint: t => t < .5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2,
+  inOutCubic: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  outCubic: t => 1 - Math.pow(1 - t, 3),
+  inCubic: t => t * t * t,
+  outBack: t => { const s = 1.70158; t = t - 1; return 1 + t * t * ((s + 1) * t + s); },
+  outBackSoft: t => { const s = 1.0; t = t - 1; return 1 + t * t * ((s + 1) * t + s); },
+  outElastic: t => t <= 0 ? 0 : t >= 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * (2 * Math.PI / 3)) + 1,
+  outBounce: t => { const n = 7.5625, d = 2.75; if (t < 1 / d) return n * t * t; if (t < 2 / d) return n * (t -= 1.5 / d) * t + .75; if (t < 2.5 / d) return n * (t -= 2.25 / d) * t + .9375; return n * (t -= 2.625 / d) * t + .984375; },
+};
+// progress of a segment starting at t0 lasting d, eased
+const seg = (t, t0, d, e = E.linear) => e(clamp((t - t0) / d));
+// 1 inside [a,b] with eased ramps of length r on both sides
+const window_ = (t, a, b, r, ein = E.outCubic, eout = E.inCubic) =>
+  t < a ? 0 : t < a + r ? ein((t - a) / r) : t < b - r ? 1 : t < b ? 1 - eout((t - (b - r)) / r) : 0;
+
+function rng(seed) { // mulberry32
+  let a = seed >>> 0;
+  return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+function hexA(hex, a) {
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`;
+}
+
+const cv = document.getElementById('c');
+let ctx = cv.getContext('2d');
+
+// ---------- noise texture for film grain ----------
+const grain = document.createElement('canvas'); grain.width = 512; grain.height = 512;
+{
+  const g = grain.getContext('2d'); const img = g.createImageData(512, 512); const r = rng(1337);
+  for (let i = 0; i < img.data.length; i += 4) { const v = 110 + r() * 90 | 0; img.data[i] = img.data[i + 1] = img.data[i + 2] = v; img.data[i + 3] = 255; }
+  g.putImageData(img, 0, 0);
+}
+
+// ---------- particle systems (analytic, stateless) ----------
+function makeBurst(seed, n, opts) {
+  const r = rng(seed), ps = [];
+  for (let i = 0; i < n; i++) {
+    const ang = r() * Math.PI * 2, sp = lerp(opts.speed[0], opts.speed[1], Math.pow(r(), 0.7));
+    ps.push({ ang, sp, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, size: lerp(opts.size[0], opts.size[1], r()), life: lerp(opts.life[0], opts.life[1], r()), hue: r(), spin: (r() - .5) * 12, wob: r() * 6.28 });
+  }
+  return ps;
+}
+const burstA = makeBurst(42, 140, { speed: [300, 1700], size: [3, 11], life: [0.6, 1.5] });
+const burstHeart = makeBurst(7, 60, { speed: [200, 900], size: [3, 8], life: [0.5, 1.1] });
+const confetti = makeBurst(99, 160, { speed: [500, 2000], size: [10, 26], life: [1.4, 2.6] });
+const embers = (() => { const r = rng(5); const a = []; for (let i = 0; i < 70; i++) a.push({ x: r(), y: r(), s: lerp(1.5, 4, r()), v: lerp(20, 70, r()), ph: r() * 6.28, tw: lerp(1, 3, r()) }); return a; })();
+
+function drawBurst(ps, t0, t, cx, cy, colors, opts = {}) {
+  const dt = t - t0; if (dt < 0) return;
+  const drag = opts.drag ?? 2.2, grav = opts.grav ?? 500;
+  for (const p of ps) {
+    const life = p.life * (opts.lifeMul ?? 1); if (dt > life) continue;
+    const k = (1 - Math.exp(-drag * dt)) / drag; // integrated velocity with drag
+    const x = cx + p.vx * k, y = cy + p.vy * k + 0.5 * grav * dt * dt;
+    const a = Math.pow(1 - dt / life, 1.4);
+    ctx.globalAlpha = a * (opts.alpha ?? 1);
+    ctx.fillStyle = colors[Math.floor(p.hue * colors.length)];
+    if (opts.rect) {
+      ctx.save(); ctx.translate(x, y); ctx.rotate(p.ang + p.spin * dt); ctx.scale(1, Math.abs(Math.cos(p.wob + dt * p.spin * 1.7)) * 0.8 + 0.2);
+      ctx.fillRect(-p.size / 2, -p.size * 0.3, p.size, p.size * 0.6); ctx.restore();
+    } else {
+      const s = p.size * (opts.shrink ? (1 - dt / life) : 1);
+      if (opts.streak) {
+        const vx = p.vx * Math.exp(-drag * dt), vy = p.vy * Math.exp(-drag * dt) + grav * dt; const L = Math.min(40, Math.hypot(vx, vy) * 0.03);
+        ctx.strokeStyle = ctx.fillStyle; ctx.lineWidth = s; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - vx / Math.hypot(vx, vy) * L, y - vy / Math.hypot(vx, vy) * L); ctx.stroke();
+      } else { ctx.beginPath(); ctx.arc(x, y, s, 0, 6.283); ctx.fill(); }
+    }
+  }
+  ctx.globalAlpha = 1;
+}
+
+// ---------- camera shake from impacts ----------
+const impacts = [[1.05, 14], [2.15, 10], [2.62, 5], [2.86, 4], [5.45, 9], [6.15, 9], [6.85, 9], [8.75, 12]];
+function shake(t) {
+  let x = 0, y = 0;
+  for (const [ti, m] of impacts) { const d = t - ti; if (d < 0 || d > 0.6) continue; const k = m * Math.exp(-d * 11); x += k * Math.sin(d * 95 + ti); y += k * Math.cos(d * 73 + ti * 2); }
+  return [x, y];
+}
+
+// ---------- logo mark ----------
+// Unit space: rect centered at (0,0) 230x170 rx 45, navy stroke; dots above; heart inside.
+function heartPath(cx, cy, s) { // s = width
+  const w = s, h = s * 0.92;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy + h * 0.42);
+  ctx.bezierCurveTo(cx - w * 0.12, cy + h * 0.3, cx - w * 0.5, cy + h * 0.05, cx - w * 0.5, cy - h * 0.2);
+  ctx.bezierCurveTo(cx - w * 0.5, cy - h * 0.46, cx - w * 0.24, cy - h * 0.56, cx, cy - h * 0.28);
+  ctx.bezierCurveTo(cx + w * 0.24, cy - h * 0.56, cx + w * 0.5, cy - h * 0.46, cx + w * 0.5, cy - h * 0.2);
+  ctx.bezierCurveTo(cx + w * 0.5, cy + h * 0.05, cx + w * 0.12, cy + h * 0.3, cx, cy + h * 0.42);
+  ctx.closePath();
+}
+function rr(x, y, w, h, r) { r = Math.min(r, w / 2, h / 2); ctx.beginPath(); ctx.roundRect(x, y, w, h, r); }
+
+function drawMark(t, st) {
+  // st: {rectW, rectH, dotL, dotR, heart, glow, beat, outline}
+  const RW = 230, RH = 170, STK = 20;
+  const w = RW * st.rectW, h = Math.max(RH * st.rectH, st.rectW > 0 ? STK : 0);
+  if (st.rectW > 0) {
+    if (st.glow > 0) { ctx.save(); ctx.shadowColor = hexA(C.coralL, 0.9 * st.glow); ctx.shadowBlur = 90 * st.glow; ctx.fillStyle = C.coralL; rr(-w / 2, -h / 2, w, h, 45); ctx.fill(); ctx.restore(); }
+    ctx.fillStyle = C.coralL; rr(-w / 2, -h / 2, w, h, 45); ctx.fill();
+    ctx.lineWidth = STK; ctx.strokeStyle = st.outline; rr(-w / 2, -h / 2, w, h, 45); ctx.stroke();
+  }
+  // dots
+  for (const [sx, dy, p] of [[-55, st.dotL, st.dotL], [55, st.dotR, st.dotR]]) {
+    if (p <= 0) continue;
+    const y = lerp(-520, -150, E.outBounce(clamp(p)));
+    ctx.fillStyle = st.outline; ctx.beginPath(); ctx.arc(sx, y, 36, 0, 6.283); ctx.fill();
+  }
+  // heart
+  if (st.heart > 0) {
+    ctx.save(); ctx.translate(0, 6); ctx.scale(st.heart * st.beat, st.heart * st.beat);
+    if (st.glow > 0) { ctx.shadowColor = hexA('#FFFFFF', 0.8 * st.glow); ctx.shadowBlur = 40 * st.glow; }
+    ctx.fillStyle = C.heart; heartPath(0, 0, 112); ctx.fill(); ctx.restore();
+  }
+}
+const MARK_BUILT = { rectW: 1, rectH: 1, dotL: 1, dotR: 1, heart: 1, glow: 0, beat: 1, outline: C.navy };
+
+// ---------- wordmark ----------
+const WORD = 'Kopare';
+function wordWidth(size) { ctx.font = `800 ${size}px Figtree`; let w = 0; for (const ch of WORD) w += ctx.measureText(ch).width; return w - size * 0.025 * (WORD.length - 1); }
+function drawWord(size, color, reveal /* 0..1 per-letter stagger or 1 */, t, t0) {
+  ctx.font = `800 ${size}px Figtree`; ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
+  const total = wordWidth(size); let x = -total / 2; const base = ctx.globalAlpha;
+  ctx.save(); ctx.beginPath(); ctx.rect(-W, -size * 1.05, 2 * W, size * 1.05 + size * 0.1); ctx.clip(); // mask: letters rise from below baseline
+  for (let i = 0; i < WORD.length; i++) {
+    const ch = WORD[i]; const cw = ctx.measureText(ch).width;
+    let p = 1; if (reveal !== 1) p = seg(t, t0 + i * 0.07, 0.75, E.outExpo);
+    ctx.globalAlpha = base * clamp(p * 1.6);
+    ctx.fillStyle = color; ctx.fillText(ch, x, (1 - p) * size * 1.1);
+    x += cw - size * 0.025;
+  }
+  ctx.globalAlpha = base; ctx.restore();
+}
+
+// Lockup: mark above, wordmark below. Local origin = lockup center.
+const lockupOff = document.createElement('canvas'); lockupOff.width = W; lockupOff.height = H;
+function drawLockup(t, x, y, s, wordP /* 0 none, 1 built, else reveal start time */, sheen /*0..1*/, markState = MARK_BUILT, color = C.navy) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  ctx.save(); ctx.translate(0, -135); drawMark(t, markState); ctx.restore();
+  if (wordP !== 0) {
+    ctx.save(); ctx.translate(0, 265);
+    if (sheen > 0) {
+      const o = lockupOff.getContext('2d'); o.setTransform(1, 0, 0, 1, 0, 0); o.clearRect(0, 0, W, H);
+      o.setTransform(ctx.getTransform());
+      const main = ctx; ctx = o; drawWord(175, color, wordP === 1 ? 1 : 0, t, wordP); ctx = main;
+      const tw = wordWidth(175); const sx = lerp(-tw * 0.75, tw * 0.75, sheen);
+      o.globalCompositeOperation = 'source-atop';
+      const g = o.createLinearGradient(sx - 90, 0, sx + 90, 0);
+      g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.5, 'rgba(255,255,255,0.6)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+      o.fillStyle = g; o.save(); o.transform(1, 0, -0.35, 1, 0, 0); o.fillRect(-tw, -220, tw * 2.5, 300); o.restore();
+      o.globalCompositeOperation = 'source-over';
+      ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(lockupOff, 0, 0); ctx.restore();
+    } else {
+      drawWord(175, color, wordP === 1 ? 1 : 0, t, wordP);
+    }
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
+// ---------- text helpers ----------
+function slamText(txt, font, color, cx, cy, t0, tOut, opts = {}) {
+  // enters with a hard scale-down + chromatic split, exits sliding up and dissolving
+  if (t < t0 || t > tOut + 0.25) return;
+  const pIn = seg(t, t0, 0.55, E.outExpo);
+  const pOut = seg(t, tOut, 0.22, E.inCubic);
+  const sc = lerp(opts.from ?? 1.9, 1, pIn) * (1 + pOut * 0.08);
+  const y = cy - pOut * 220, a = (1 - pOut) * clamp(pIn * 3);
+  ctx.save(); ctx.translate(cx, y); ctx.scale(sc, sc); ctx.font = font; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const split = (1 - pIn) * 28; // chromatic aberration amount
+  if (split > 0.5) {
+    ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = a * 0.75;
+    ctx.fillStyle = C.coral; ctx.fillText(txt, -split, 0);
+    ctx.fillStyle = C.lightBlue; ctx.fillText(txt, split, split * 0.35);
+    ctx.globalCompositeOperation = 'source-over';
+  }
+  ctx.globalAlpha = a; ctx.fillStyle = color; ctx.fillText(txt, 0, 0);
+  if (opts.underline) { const uw = ctx.measureText(txt).width; const up = seg(t, t0 + 0.25, 0.6, E.outExpo); ctx.fillStyle = C.coral; ctx.fillRect(-uw / 2, 92, uw * up, 10); }
+  ctx.restore(); ctx.globalAlpha = 1;
+}
+
+function ring(cx, cy, r, lw, color, a) { if (a <= 0) return; ctx.globalAlpha = a; ctx.strokeStyle = color; ctx.lineWidth = lw; ctx.beginPath(); ctx.arc(cx, cy, r, 0, 6.283); ctx.stroke(); ctx.globalAlpha = 1; }
+
+// ---------- backgrounds ----------
+function navyBackground(t) {
+  ctx.fillStyle = C.navyDeep; ctx.fillRect(0, 0, W, H);
+  // slow drifting color fields
+  const g1 = ctx.createRadialGradient(W * 0.5 + Math.sin(t * 0.5) * 60, H * 0.42, 0, W * 0.5, H * 0.42, 900);
+  const ig = clamp((t - 0.2) / 1.0) * 0.55 + seg(t, 1.02, 0.08) * 0.4 - seg(t, 1.1, 2.0) * 0.4; // ignition bloom
+  g1.addColorStop(0, hexA(C.coral, 0.10 + 0.55 * ig)); g1.addColorStop(0.45, hexA(C.coralD, 0.08 + 0.15 * ig)); g1.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g1; ctx.fillRect(0, 0, W, H);
+  const g2 = ctx.createRadialGradient(W * 0.95, H * 0.1 + Math.cos(t * 0.35) * 80, 0, W * 0.95, H * 0.1, 900);
+  g2.addColorStop(0, hexA(C.navyAlt, 0.9)); g2.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g2; ctx.fillRect(0, 0, W, H);
+  const g3 = ctx.createRadialGradient(W * 0.05, H * 0.92, 0, W * 0.05, H * 0.92, 800);
+  g3.addColorStop(0, hexA(C.coralD, 0.35)); g3.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g3; ctx.fillRect(0, 0, W, H);
+  // rising embers
+  const ea = clamp((t - 1.0) / 1.5);
+  if (ea > 0) for (const e of embers) {
+    const y = ((e.y * H - (t - 1) * e.v * 2) % H + H) % H; const x = e.x * W + Math.sin(t * e.tw + e.ph) * 18;
+    ctx.globalAlpha = ea * (0.25 + 0.35 * (0.5 + 0.5 * Math.sin(t * e.tw * 2 + e.ph)));
+    ctx.fillStyle = C.coralL; ctx.beginPath(); ctx.arc(x, y, e.s, 0, 6.283); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+function creamBackground(t) {
+  ctx.fillStyle = C.cream; ctx.fillRect(0, 0, W, H);
+  const g = ctx.createRadialGradient(W * 0.5, H * 0.35, 0, W * 0.5, H * 0.35, 1100);
+  g.addColorStop(0, 'rgba(255,255,255,0.55)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  const g2 = ctx.createRadialGradient(W * 0.9, H * 0.95, 0, W * 0.9, H * 0.95, 900);
+  g2.addColorStop(0, hexA(C.coralL, 0.28)); g2.addColorStop(1, hexA(C.coralL, 0));
+  ctx.fillStyle = g2; ctx.fillRect(0, 0, W, H);
+  const g3 = ctx.createRadialGradient(W * 0.05, H * 0.05, 0, W * 0.05, H * 0.05, 900);
+  g3.addColorStop(0, hexA(C.lightBlue, 0.5)); g3.addColorStop(1, hexA(C.lightBlue, 0));
+  ctx.fillStyle = g3; ctx.fillRect(0, 0, W, H);
+}
+function vignette(strength) {
+  const g = ctx.createRadialGradient(W / 2, H / 2, H * 0.25, W / 2, H / 2, H * 0.78);
+  g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, `rgba(0,0,0,${strength})`);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+}
+function filmGrain(t, a) {
+  const r = rng(Math.floor(t * 60) + 11); const ox = -(r() * 512) | 0, oy = -(r() * 512) | 0;
+  ctx.save(); ctx.globalAlpha = a; ctx.globalCompositeOperation = 'overlay';
+  const pat = ctx.createPattern(grain, 'repeat'); ctx.translate(ox, oy); ctx.fillStyle = pat; ctx.fillRect(-ox, -oy, W, H);
+  ctx.restore();
+}
+
+// ---------- Android head (simplified, drawn, CC-BY style silhouette) ----------
+function drawAndroid(cx, cy, s, color) {
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(s, s); ctx.fillStyle = color; ctx.strokeStyle = color; ctx.lineCap = 'round'; ctx.lineWidth = 9;
+  ctx.beginPath(); ctx.arc(0, 0, 100, Math.PI, 0); ctx.lineTo(100, 0); ctx.lineTo(-100, 0); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(-52, -84); ctx.lineTo(-74, -122); ctx.moveTo(52, -84); ctx.lineTo(74, -122); ctx.stroke();
+  ctx.fillStyle = C.cream; ctx.beginPath(); ctx.arc(-42, -44, 10, 0, 6.283); ctx.arc(42, -44, 10, 0, 6.283); ctx.fill();
+  ctx.restore();
+}
+
+// ---------- store pill (plain text, not a copy of Google's badge artwork) ----------
+function drawPlayBadge(cx, cy, s, a) {
+  ctx.save(); ctx.globalAlpha = a; ctx.translate(cx, cy); ctx.scale(s, s);
+  ctx.font = `600 40px Figtree`; const label = 'Get it on Google Play'; const tw = ctx.measureText(label).width; const pw = tw + 150;
+  rr(-pw / 2, -52, pw, 104, 52); ctx.fillStyle = C.navy; ctx.fill();
+  ctx.fillStyle = C.coralL; ctx.beginPath(); ctx.moveTo(-pw / 2 + 48, -22); ctx.lineTo(-pw / 2 + 48, 22); ctx.lineTo(-pw / 2 + 86, 0); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = C.cream; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(label, -pw / 2 + 108, 2);
+  ctx.restore();
+}
+
+// ------------------------------------------------------------------
+// MASTER RENDER
+// ------------------------------------------------------------------
+let t = 0;
+function render(time) {
+  t = time;
+  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+
+  const wipe = seg(t, 8.45, 0.55, E.outQuint); // navy -> cream
+  const onCream = wipe >= 1;
+  if (!onCream) navyBackground(t);
+  if (wipe > 0) {
+    // diagonal sweep with a coral leading edge
+    ctx.save(); ctx.beginPath();
+    const d = lerp(-H * 0.9, H * 2.05, wipe);
+    ctx.moveTo(-W, d); ctx.lineTo(2 * W, d - H * 0.9); ctx.lineTo(2 * W, -H); ctx.lineTo(-W, -H); ctx.closePath(); ctx.clip();
+    creamBackground(t); ctx.restore();
+    if (wipe < 1) { ctx.save(); ctx.translate(0, d); ctx.rotate(-Math.atan2(H * 0.9, 3 * W)); ctx.fillStyle = C.coral; ctx.fillRect(-W * 2, -16, W * 6, 32); ctx.fillStyle = hexA(C.coral, 0.35); ctx.fillRect(-W * 2, 16, W * 6, 90); ctx.restore(); }
+  }
+
+  const [sx, sy] = shake(t); ctx.translate(sx, sy);
+
+  // ============ 0.0 – 1.05  spark ============
+  if (t < 1.3) {
+    const p = seg(t, 0.0, 1.0, E.inOutCubic);
+    const cx = W / 2, cy = H * 0.42;
+    const gone = seg(t, 1.0, 0.1);
+    // soft coral halo that swells as the motes arrive
+    const halo = ctx.createRadialGradient(cx, cy, 0, cx, cy, lerp(120, 420, p));
+    halo.addColorStop(0, hexA(C.coralL, 0.45 * (1 - gone) * (0.7 + 0.3 * Math.sin(t * 18)))); halo.addColorStop(1, hexA(C.coralL, 0));
+    ctx.fillStyle = halo; ctx.fillRect(0, 0, W, H);
+    // motes being pulled in, with trails
+    const mr = rng(321);
+    for (let i = 0; i < 46; i++) {
+      const a0 = mr() * 6.283, spin = lerp(0.8, 2.4, mr()), delay = mr() * 0.45, rr0 = lerp(560, 900, mr());
+      const q = E.inCubic(seg(t, delay, 1.0 - delay)); const rad = lerp(rr0, 14, q); const ang = a0 + t * spin;
+      const x = cx + Math.cos(ang) * rad, y = cy + Math.sin(ang) * rad * 0.7;
+      const q2 = E.inCubic(seg(t - 0.05, delay, 1.0 - delay)); const rad2 = lerp(rr0, 14, q2); const ang2 = a0 + (t - 0.05) * spin;
+      ctx.globalAlpha = (1 - gone) * clamp(q * 4) * 0.9; ctx.strokeStyle = C.coralL; ctx.lineWidth = lerp(2, 5, q); ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(cx + Math.cos(ang2) * rad2, cy + Math.sin(ang2) * rad2 * 0.7); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    // the spark itself
+    const r = lerp(5, 13, p) * (1 + 0.18 * Math.sin(t * 42)) * (1 - gone);
+    ctx.save(); ctx.shadowColor = C.coralL; ctx.shadowBlur = 40 + 60 * p; ctx.fillStyle = C.white;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, 6.283); ctx.fill(); ctx.restore();
+  }
+  // ignition flash + burst at 1.05
+  if (t >= 1.05 && t < 3.0) {
+    const cx = W / 2, cy = H * 0.42;
+    drawBurst(burstA, 1.05, t, cx, cy, [C.coralL, C.white, C.coral, C.lightBlue], { streak: true, shrink: true, grav: 350 });
+    const rp = seg(t, 1.05, 1.1, E.outExpo); ring(cx, cy, 60 + rp * 900, 14 * (1 - rp) + 1, C.coralL, 0.8 * (1 - rp));
+    const rp2 = seg(t, 1.12, 1.3, E.outExpo); ring(cx, cy, 40 + rp2 * 1300, 6 * (1 - rp2) + 1, C.white, 0.5 * (1 - rp2));
+  }
+
+  // ============ 1.05 – 3.6  the mark assembles ============
+  // ============ 3.4 – 5.1   wordmark arrives, mark shifts up ============
+  // ============ 5.1 – 8.6   lockup to top, kinetic words ============
+  if (t >= 1.05 && t < 8.75) {
+    const heartIn = seg(t, 2.15, 0.7, E.outElastic);
+    const beat = 1 + 0.16 * Math.exp(-((t - 2.62) * 9)) * (t > 2.62 ? 1 : 0) + 0.12 * Math.exp(-((t - 2.86) * 9)) * (t > 2.86 ? 1 : 0);
+    const glow = window_(t, 1.05, 3.4, 0.5) * 0.9 + seg(t, 2.6, 0.05) * 0.4 * Math.exp(-(t - 2.6) * 2);
+    const st = {
+      rectW: seg(t, 1.05, 0.55, E.outExpo), rectH: seg(t, 1.4, 0.7, E.outBack),
+      dotL: seg(t, 1.75, 0.85), dotR: seg(t, 1.9, 0.85),
+      heart: heartIn, beat, glow, outline: C.cream,
+    };
+    // lockup position: hero mark -> shifted lockup -> top badge
+    const shift = seg(t, 3.4, 0.9, E.inOutQuint);
+    const toTop = seg(t, 5.05, 0.75, E.inOutQuint);
+    const exitP = seg(t, 8.3, 0.25, E.inCubic);
+    let s = lerp(lerp(2.3, 1.55, shift), 0.62, toTop) * (1 - exitP * 0.2);
+    let y = lerp(lerp(H * 0.42 + 135 * 2.3, H * 0.47, shift), 290, toTop) - exitP * 500;
+    // on the hero frames the mark sits at H*0.42; lockup centre is 135*s above mark centre, so offset accordingly
+    const wordP = t < 3.7 ? 0 : 3.7;
+    const sheen = window_(t, 4.45, 5.15, 0.0) ? seg(t, 4.45, 0.7, E.inOutCubic) : 0;
+    ctx.globalAlpha = 1 - exitP;
+    drawLockup(t, W / 2, y, s, wordP, sheen, st, C.cream);
+    ctx.globalAlpha = 1;
+    // heart ripple + burst at the heartbeats
+    const hx = W / 2, hy = lerp(H * 0.42, H * 0.47 - 135 * 1.55, shift);
+    if (t >= 2.62 && t < 4) { const rp = seg(t, 2.62, 0.9, E.outExpo); ring(hx, hy, 130 + rp * 520, 10 * (1 - rp) + 1, C.coralL, 0.7 * (1 - rp)); drawBurst(burstHeart, 2.62, t, hx, hy, [C.coralL, C.white, C.heart], { shrink: true, grav: 300 }); }
+    if (t >= 2.86 && t < 4) { const rp = seg(t, 2.86, 0.9, E.outExpo); ring(hx, hy, 130 + rp * 620, 8 * (1 - rp) + 1, C.white, 0.5 * (1 - rp)); }
+    // flash on heart arrival
+    const hf = seg(t, 2.15, 0.25); if (t >= 2.15 && hf < 1) { ctx.fillStyle = `rgba(255,220,210,${0.35 * (1 - hf)})`; ctx.fillRect(-50, -50, W + 100, H + 100); }
+
+    // tagline under the hero lockup (before the kinetic words)
+    const tl = window_(t, 4.0, 5.1, 0.35);
+    if (tl > 0) { ctx.save(); ctx.globalAlpha = tl; ctx.font = `500 50px Figtree`; ctx.fillStyle = hexA(C.lightBlue, 0.9); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('Co-parenting, without the chaos.', W / 2, H * 0.47 + 265 * 1.55 + 130 + (1 - tl) * 30); ctx.restore(); }
+  }
+
+  // kinetic words
+  if (t >= 5.4 && t < 8.75) {
+    const cy = H * 0.52;
+    const big = `800 168px Figtree`;
+    slamText('Schedules.', big, C.cream, W / 2, cy, 5.45, 5.93);
+    slamText('Expenses.', big, C.cream, W / 2, cy, 6.15, 6.63);
+    slamText('Messages.', big, C.cream, W / 2, cy, 6.85, 7.33);
+    // "One calm place." - the emotional beat, slower, serif italic
+    const p = seg(t, 7.55, 0.9, E.outQuint), o = seg(t, 8.25, 0.25, E.inCubic);
+    if (t >= 7.55) {
+      ctx.save(); ctx.globalAlpha = clamp(p * 2) * (1 - o); ctx.translate(W / 2, cy - 30 + (1 - p) * 60 - o * 120);
+      ctx.font = `italic 500 150px Newsreader`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = C.cream; ctx.fillText('One calm', 0, -80);
+      ctx.fillStyle = C.coralL; ctx.fillText('place.', 0, 90);
+      const uw = seg(t, 7.9, 0.7, E.outExpo); ctx.fillStyle = C.coral; ctx.fillRect(-210 * uw, 190, 420 * uw, 8);
+      ctx.restore();
+    }
+    // tiny step counter top-right, breathing with the words
+    const idx = t < 6.15 ? 1 : t < 6.85 ? 2 : t < 7.55 ? 3 : 0;
+    if (idx && t < 7.55) { ctx.save(); ctx.globalAlpha = window_(t, 5.45, 7.55, 0.2); ctx.font = `600 34px Figtree`; ctx.fillStyle = hexA(C.lightBlue, 0.7); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.letterSpacing = '8px'; ctx.fillText(`0${idx}  /  03`, W / 2, cy + 190); ctx.restore(); }
+  }
+
+  // ============ 8.55 – 10.4  NOW ON ANDROID ============
+  if (t >= 8.6 && t < 10.45) {
+    const cx = W / 2;
+    const exit = seg(t, 10.1, 0.32, E.inCubic);
+    const ap = seg(t, 8.7, 0.9, E.outElastic);
+    ctx.save(); ctx.globalAlpha = 1 - exit; ctx.translate(0, -exit * 200);
+    // android head drops in
+    const ay = lerp(H * 0.22 - 500, H * 0.26, seg(t, 8.65, 0.8, E.outBounce));
+    ctx.save(); ctx.shadowColor = hexA(C.green, 0.5); ctx.shadowBlur = 50 * clamp(ap); drawAndroid(cx, ay, 1.15, C.green); ctx.restore();
+    // NOW ON
+    const p1 = seg(t, 8.8, 0.6, E.outExpo);
+    ctx.font = `700 54px Figtree`; ctx.letterSpacing = '18px'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.globalAlpha = (1 - exit) * p1; ctx.fillStyle = C.coralD; ctx.fillText('NOW ON', cx + 9, lerp(H * 0.40 + 40, H * 0.40, p1)); ctx.letterSpacing = '0px';
+    // ANDROID - big, each letter slams in
+    const word = 'Android'; ctx.font = `800 236px Figtree`; let tw = 0; for (const ch of word) tw += ctx.measureText(ch).width; tw -= 236 * 0.03 * (word.length - 1);
+    let x = cx - tw / 2; ctx.textAlign = 'left';
+    for (let i = 0; i < word.length; i++) {
+      const ch = word[i], cw = ctx.measureText(ch).width; const p = seg(t, 8.82 + i * 0.045, 0.6, E.outBack);
+      ctx.save(); ctx.translate(x + cw / 2, H * 0.50); ctx.scale(lerp(2.4, 1, p), lerp(2.4, 1, p)); ctx.globalAlpha = (1 - exit) * clamp(p * 1.5);
+      ctx.fillStyle = C.navy; ctx.fillText(ch, -cw / 2, 0); ctx.restore(); x += cw - 236 * 0.03;
+    }
+    // supporting line
+    const p3 = seg(t, 9.3, 0.6, E.outExpo);
+    ctx.textAlign = 'center'; ctx.font = `italic 500 60px Newsreader`; ctx.globalAlpha = (1 - exit) * p3; ctx.fillStyle = C.navyAlt;
+    ctx.fillText('Finally. Both phones, one calendar.', cx, lerp(H * 0.60 + 30, H * 0.60, p3));
+    ctx.restore(); ctx.globalAlpha = 1;
+    // confetti
+    drawBurst(confetti, 8.75, t, cx, H * 0.45, [C.coral, C.navy, C.green, C.coralL, C.lightBlue], { rect: true, grav: 1400, drag: 1.6 });
+    // flash
+    const fl = seg(t, 8.75, 0.3); if (fl < 1) { ctx.fillStyle = `rgba(255,255,255,${0.5 * (1 - fl)})`; ctx.fillRect(-50, -50, W + 100, H + 100); }
+  }
+
+  // ============ 10.4 – 12.0  end card ============
+  if (t >= 10.5) {
+    const p = seg(t, 10.5, 0.9, E.outQuint);
+    const breathe = 1 + 0.012 * Math.sin((t - 10.5) * 2.2);
+    ctx.save(); ctx.globalAlpha = clamp(p * 1.5);
+    drawLockup(t, W / 2, lerp(H * 0.36 + 120, H * 0.36, p), 1.25 * breathe, 1, 0);
+    ctx.restore();
+    const p2 = seg(t, 10.8, 0.7, E.outExpo);
+    ctx.save(); ctx.globalAlpha = p2; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = `500 44px Figtree`; ctx.fillStyle = C.navyAlt; ctx.fillText('Now on Android and iOS', W / 2, H * 0.36 + 450 + 40 * (1 - p2));
+    ctx.restore();
+    drawPlayBadge(W / 2, H * 0.36 + 580, lerp(0.8, 1, seg(t, 10.95, 0.7, E.outBack)), seg(t, 10.95, 0.4));
+    const p4 = seg(t, 11.15, 0.6, E.outExpo);
+    ctx.save(); ctx.globalAlpha = p4; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = `700 40px Figtree`; ctx.letterSpacing = '6px'; ctx.fillStyle = C.coralD; ctx.fillText('KOPARE.APP', W / 2, H * 0.36 + 700); ctx.restore();
+  }
+
+  ctx.restore(); // undo shake
+  // post: vignette + grain, and a loop fade back to navy at the very end
+  vignette(onCream ? 0.18 : 0.55);
+  filmGrain(t, onCream ? 0.10 : 0.16);
+  const fo = seg(t, 11.65, 0.35, E.inOutCubic); if (fo > 0) { ctx.fillStyle = hexA(C.navyDeep, fo); ctx.fillRect(0, 0, W, H); }
+  ctx.restore();
+}
+
+window.render = render;
+window.DUR = DUR;
+window.ready = document.fonts.load('800 100px Figtree').then(() => document.fonts.load('italic 500 100px Newsreader')).then(() => document.fonts.load('600 100px Newsreader')).then(() => true);
+
+// Live preview when opened directly in a browser (not used by the frame renderer).
+if (!navigator.webdriver) {
+  window.ready.then(() => { const t0 = performance.now(); (function loop() { render(((performance.now() - t0) / 1000) % DUR); requestAnimationFrame(loop); })(); });
+}
+</script>
+</body>
+</html>
