@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Kopare Privacy Policy - How we collect, use, and protect your information.">
+    <meta name="description" content="Kopare Privacy Policy - What Kopare collects, why, who can see it, and how to delete it.">
 
     <!-- iOS Universal Links & App Meta Tags -->
     <meta name="apple-itunes-app" content="app-id=6749215322">
@@ -59,6 +59,11 @@
             font-weight: 600;
         }
 
+        .privacy-content a {
+            color: var(--primary-blue);
+            overflow-wrap: anywhere;
+        }
+
         .privacy-intro {
             font-size: 1.15rem;
             color: var(--text-dark);
@@ -79,6 +84,7 @@
         .back-link:hover {
             text-decoration: underline;
         }
+
     </style>
 </head>
 <body>
@@ -103,56 +109,113 @@
             <a href="index.html" class="back-link">&larr; Back to Home</a>
 
             <h1>Privacy Policy</h1>
-            <p class="effective-date">Effective Date: January 6, 2026</p>
+            <p class="effective-date">Effective Date: October 21, 2026</p>
 
             <div class="privacy-intro">
-                <p><strong>Your privacy matters to us.</strong> This Privacy Policy explains how Kopare ("the App," "we," "our") collects, uses, and protects your information. Data is only used for app purposes and never sold.</p>
+                <p>This policy explains what Kopare ("Kopare", "we", "us") collects, why, who can see it, and how to delete it. It covers the Kopare apps for iPhone, Apple Watch and Android, and kopare.app. <strong>We don't sell your information, and Kopare has no ads.</strong></p>
             </div>
 
-            <h2>Information We Use</h2>
-            <p><strong>Account Information:</strong> When you sign up, we collect your email address, display name, and authentication details.</p>
-
-            <p><strong>Calendar & Event Data:</strong> Events, custody requests, and messages you create are stored securely in our database (hosted on Firebase).</p>
-
-            <p><strong>Device Information:</strong> We may collect non-identifying details such as device type, operating system, and app version to improve performance.</p>
-
-            <h2>How We Use Information</h2>
+            <h2>1. Accounts and sign-in</h2>
             <ul>
-                <li>To provide Kopare's core features: shared calendars, custody requests, and topic-based messaging.</li>
-                <li>To secure your account and sync data across devices.</li>
-                <li>To improve and maintain Kopare.</li>
+                <li><strong>iPhone:</strong> parents and helpers sign in with Apple. Kopare asks Apple only for your name, which becomes the name other members see until you change it.</li>
+                <li><strong>Android:</strong> parents and helpers sign in with Google. Kopare asks Google only for the basic sign-in; no extra permissions (for example, Gmail, Drive or Contacts) are requested.</li>
+                <li>When you sign in, our sign-in provider (Firebase Authentication, run by Google) keeps an account ID and, if your sign-in provider shares it, your email address. With Google sign-in it also receives the name and profile photo on your Google account; the Kopare app doesn't use them.</li>
+                <li>You choose the name other members see. We store it with your account.</li>
             </ul>
 
-            <h2>How We Share Information</h2>
-            <p><strong>With Co-Parents or Caregivers:</strong> Events, requests, and messages are shared only with members of your shared calendar.</p>
+            <h2>2. What you share with your family calendar</h2>
+            <p>Kopare is a shared space. What you add to a family calendar is visible to its members, according to their role:</p>
+            <ul>
+                <li><strong>Parents</strong> see the calendar, day notes, messages and expenses.</li>
+                <li><strong>Helpers</strong> (for example, a grandparent or a nanny) see the calendar and only the day notes a parent shares with helpers. They can't see messages or expenses.</li>
+                <li><strong>Kids</strong> see the calendar only.</li>
+            </ul>
+            <p>What we store to provide this:</p>
+            <ul>
+                <li><strong>Calendar:</strong> events, custody schedules and change requests, month plans, handoff times.</li>
+                <li><strong>Day notes:</strong> a short note and up to 4 photos for a day.</li>
+                <li><strong>Messages:</strong> topics and the messages in them.</li>
+                <li><strong>Expenses and payments:</strong> the amount, how it's split, category, date, notes, receipt photos (up to 5 per expense), and payments you record between parents, with up to 2 photos of proof of payment. Kopare records payments; it doesn't process or move money and never asks for card or bank details.</li>
+                <li><strong>Personal expenses</strong> ("just for me") are visible only to you.</li>
+            </ul>
 
-            <p><strong>With Service Providers:</strong> We use trusted third-party providers (such as Google Firebase) for hosting and data storage.</p>
+            <h2>3. Photos</h2>
+            <p>You choose each photo you add: receipts, proof of payment, and day-note photos. Before upload, the app resizes the photo and saves a new copy, which removes the photo's hidden details, including where it was taken. Photos are stored in Firebase Cloud Storage and can be seen by the people who can see the expense, payment or note they belong to.</p>
+            <p>Photos attached to a shared expense or payment can't be deleted, because the other parent relies on them as a record. A parent can replace one by uploading a new photo.</p>
 
-            <p><strong>Never Sold to Advertisers:</strong> We do not sell or rent your personal information.</p>
+            <h2>4. Kids' accounts</h2>
+            <ul>
+                <li>A parent creates a kid's account and chooses the name it shows. We store that name, the parent who manages the account, and the kid's role on the family calendar. A kid's account has no email address and no password.</li>
+                <li>To sign in, the kid enters a one-time code that a parent shows them in Kopare. The code works once and expires after 15 minutes. Kids can't sign in with Google.</li>
+                <li>Kids can see the family calendar but can't add or change anything, and can't see day notes, messages or expenses.</li>
+                <li><strong>Notifications:</strong> on Android, kids aren't asked for notification permission and don't receive notifications. On iPhone, Kopare doesn't ask a kid to allow notifications; if a kid turns them on in the app's Settings, they may receive some calendar notifications. The Apple Watch app doesn't use notifications.</li>
+                <li><strong>Usage statistics (section 6):</strong> on Android, we don't collect them while a kid is signed in; when a kid enters a code, the app records only whether the code worked (for example "accepted" or "not found"), before the kid is signed in, with no name, code or account ID. On iPhone, usage statistics are collected while a kid uses the app, the same way as for other accounts, and never include the kid's name. The Apple Watch app doesn't collect usage statistics.</li>
+                <li>A parent can remove a kid's account at any time, which deletes it.</li>
+            </ul>
 
-            <h2>Data Retention</h2>
-            <p>Events, requests, and messages remain available until deleted by you.</p>
+            <h2>5. Notifications</h2>
+            <p>If you allow notifications, we store a notification token for your device so we can tell you about new messages, expenses, events and reminders. We keep the tokens for your most recent devices (up to 10) and delete them when you sign out or delete your account.</p>
 
-            <p>Account information is retained while your account is active. You may request deletion of your account at any time.</p>
+            <h2>6. Usage statistics (analytics)</h2>
+            <p>We use Google Analytics for Firebase to understand which features are used and where things go wrong. It records events such as "event created" or "message sent" and which screens are opened, along with technical details such as app version, device type, operating system and an approximate location (country or city) that Google derives from the IP address.</p>
+            <ul>
+                <li>We never send names, email addresses, message text, note text or photos to analytics. Some events include the amount of an expense or payment.</li>
+                <li>Analytics isn't linked to your name or email. On iPhone, analytics is tagged with your Kopare account ID (a random code, not your name or email) so we can see how the app is used over time. On Android, we don't set an account ID in analytics.</li>
+                <li>On Android, Kopare doesn't use your device's advertising ID. On iPhone, the app asks whether it may track you; only if you allow it, Google Analytics can read your device's advertising identifier. You can change this at any time in iPhone Settings &gt; Privacy &amp; Security &gt; Tracking.</li>
+                <li>For kids' accounts, see section 4.</li>
+                <li>Google Analytics keeps this data for up to 14 months. We also keep a copy of the analytics events in our own Google Cloud project to study how the app is used; that copy isn't deleted automatically.</li>
+            </ul>
+            <p><strong>Crash reports and performance (iPhone only):</strong> the iPhone app uses Firebase Crashlytics to send us a report when the app crashes (what the app was doing, the device model and the iOS version), and Firebase Performance Monitoring to measure how quickly screens and network requests load. These don't include your name or email. We don't use crash-reporting or performance tools on Android.</p>
 
-            <h2>Security</h2>
-            <p>Kopare uses industry-standard security measures, ensuring that only authorized users can access shared calendars.</p>
+            <h2>7. Service providers and sharing</h2>
+            <p>We use Google Firebase (part of Google Cloud) to sign you in, store your data and photos, send notifications, deliver app settings, run analytics, and (on iPhone) receive crash and performance reports. Google processes this data for us under its terms.</p>
+            <p>We don't share your information with anyone else, except:</p>
+            <ul>
+                <li>with the members of your family calendar, as described in section 2;</li>
+                <li>for the iPhone app, Apple handles sign in with Apple, push notifications and any in-app purchases; we never receive your payment details;</li>
+                <li>when the law requires it.</li>
+            </ul>
 
-            <h2>Changes to This Policy</h2>
-            <p>We may update this Privacy Policy periodically. When changes are made, we will update the effective date above and provide notice where required.</p>
+            <h2>8. Security</h2>
+            <p>Data travels between the apps and our servers over encrypted connections (HTTPS). Our database rules let only members of a family calendar read it, and only in their role.</p>
 
-            <h2>Subscriptions and Payments</h2>
-            <p>The app offers optional in-app subscriptions processed securely through Apple's App Store. Payment information is handled directly by Apple, and the app does not collect, store, or have access to users' payment or billing information.</p>
+            <h2>9. How long we keep data</h2>
+            <ul>
+                <li><strong>Your account</strong> (name, sign-in record, notification tokens): until you delete your account.</li>
+                <li><strong>What you add to a shared family calendar</strong> (events, messages, expenses, payments, day notes and their photos): kept for the remaining members after you leave or delete your account, until they delete it or the calendar is deleted. Your name may still appear on things you added.</li>
+                <li><strong>Personal expenses and their photos:</strong> deleted with your account on Android. If you delete your account in the iPhone app, no one can see them anymore, but they aren't erased automatically; ask us (section 14) and we'll erase them.</li>
+                <li><strong>Kids' sign-in codes:</strong> expire after 15 minutes and are deleted when used.</li>
+                <li><strong>Analytics:</strong> see section 6.</li>
+                <li>We have no automatic deletion of family calendar content after a set time.</li>
+            </ul>
+            <p>Deleted data may remain in our service provider's backup and recovery systems for a limited time before it is permanently removed.</p>
 
-            <h2>Contact Us</h2>
-            <p>If you have any questions about this Privacy Policy or how we handle your information, please contact us through the app's support feature.</p>
+            <h2>10. Deleting your account</h2>
+            <ul>
+                <li><strong>In the app:</strong> on Android, Settings &gt; <strong>Delete account</strong>, then confirm with Google. On iPhone, Settings (under More, for parents) &gt; <strong>Delete Account</strong>, then confirm with Apple.</li>
+                <li><strong>Without the app:</strong> see <a href="delete-account/">kopare.app/delete-account</a>, or write to us through the support chat at <a href="support/">kopare.app/support</a> or at <a href="mailto:koparellc@gmail.com">koparellc@gmail.com</a>.</li>
+                <li>Deleting your account removes you from every family calendar, and deletes your profile, sign-in account, notification tokens and personal expenses. What you shared with a family calendar stays with its other members (section 9). If you're the calendar's owner, ownership passes to the other parent.</li>
+                <li>Kids' accounts are removed by a parent.</li>
+            </ul>
+
+            <h2>11. Children</h2>
+            <p>Kopare is meant for parents and the adults who help them. Kids can have a view-only account that a parent creates and manages (section 4). We don't knowingly collect information directly from children beyond what's described in section 4. If you believe a child's information was collected in another way, contact us and we'll delete it.</p>
+
+            <h2>12. Your choices and rights</h2>
+            <p>You can see and edit your name in the app, delete what you've added, turn notifications off in your phone's settings, and delete your account. Depending on where you live, you may have other rights (for example, to access a copy of your data); contact us (section 14). We respond to privacy requests within 30 days.</p>
+
+            <h2>13. Changes</h2>
+            <p>We'll update the effective date above when this policy changes, and tell you in the app when a change is significant.</p>
+
+            <h2>14. Contact</h2>
+            <p>Use the support chat at <a href="support/">kopare.app/support</a> (no app needed), or email <a href="mailto:koparellc@gmail.com">koparellc@gmail.com</a>.</p>
         </div>
     </main>
 
     <footer>
         <div class="container">
             <p>&copy; 2026 Kopare. All rights reserved.</p>
-            <p><a href="privacy-policy.html">Privacy Policy</a> | <a href="index.html">Kopare App</a> | <a href="signalscroll.html">SignalScroll</a></p>
+            <p><a href="privacy-policy.html">Privacy Policy</a> | <a href="delete-account/">Delete Account</a> | <a href="index.html">Kopare App</a> | <a href="signalscroll.html">SignalScroll</a></p>
         </div>
     </footer>
 </body>
