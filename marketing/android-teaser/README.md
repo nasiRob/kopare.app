@@ -19,3 +19,15 @@ Quick keyframe check: `node render.js /tmp/preview 60 --preview 1.1,2.5,4.5,7,9.
 Notes
 - The Android robot head is drawn, not the official asset. Google licenses the robot under CC BY 3.0; if you keep it, credit "The Android robot is reproduced or modified from work created and shared by Google" in the caption or profile, or swap in the official artwork.
 - "Get it on Google Play" is plain text in a brand-coloured pill on purpose; Google's badge guidelines don't allow redrawn copies of the official badge. Overlay the official badge PNG if you want that look.
+
+Sound effects (ElevenLabs)
+- `sfx/cues.json` — the sound design cue sheet: 15 cues timed to the animation (riser, ignition boom, bounces, heart pop and heartbeat, letter ticks, sheen, three text slams, calm pad, wipe, confetti, typing pops, logo sting, plus a quiet ambient bed), each with its text-to-sound-effects prompt, duration, gain and placement times.
+- `sfx/generate.js` — calls the ElevenLabs text-to-sound-effects API for each cue and writes `sfx/<name>.mp3`. Needs `ELEVENLABS_API_KEY` in the environment and network access to `api.elevenlabs.io`.
+- `sfx/mix.js` — lays the cues onto the silent MP4 with ffmpeg and writes `kopare-android-teaser-1080x1920-sfx.mp4`.
+
+```
+cd marketing/android-teaser/sfx
+ELEVENLABS_API_KEY=... node generate.js      # ~15 short generations
+node mix.js                                   # writes ../kopare-android-teaser-1080x1920-sfx.mp4
+```
+Tweak a cue's prompt, gain or timing in `cues.json`, regenerate just that cue with `node generate.js --only slam --force`, and re-run `mix.js`.
