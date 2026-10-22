@@ -6,7 +6,7 @@ const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls)
 
 const CANNED = [
   ["Join with a code", "Ask your co-parent for their invite code, then in Kopare open Join and enter it. You can bring what you already added, or join without moving anything."],
-  ["Codes expire", "Invite codes come from your co-parent's Invite screen and last 3 days. If yours has expired, ask them for a new one."],
+  ["Codes expire", "Invite codes come from your co-parent's Invite screen and last 7 days. If yours has expired, ask them for a new one."],
   ["Different Apple ID", "A common cause is signing in with a different Apple ID than before. Could you check which Apple ID you used the first time?"],
   ["Still free", "Kopare is free, with nothing locked behind payment. The optional paid tier is just a way to support the app."],
 ];

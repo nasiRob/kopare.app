@@ -19,7 +19,7 @@ const QUICK = [
       "You can bring what you already added, or join without moving anything."] },
   { id: "join-code", icon: "join", label: "How do I join with an invite code?",
     title: "Where the code comes from",
-    text: "Codes come from your co-parent's Invite screen and last 3 days. If yours has expired, ask them for a new one." },
+    text: "Codes come from your co-parent's Invite screen and last 7 days. If yours has expired, ask them for a new one." },
   { id: "missing-data", icon: "search", label: "My events or data are missing",
     title: "Two common causes",
     bullets: ["You signed in with a different Apple ID than before.", "You started a new calendar instead of joining an existing one."],
