@@ -1,0 +1,11 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.kopare.app",
+    "sha256_cert_fingerprints": [
+      "F0:8F:1B:BB:33:70:A1:2E:D9:FF:C0:E4:A6:2A:F1:35:7B:40:1F:88:36:D7:5B:81:AF:E3:EA:84:9E:DE:97:46",
+      "80:6B:4D:D6:98:4C:6E:CE:6F:C0:2B:71:8D:C8:3A:2D:93:ED:DC:DE:00:30:F2:45:F3:6C:96:40:5D:6C:BC:1E"
+    ]
+  }
+}]

@@ -26,6 +26,17 @@
     <meta name="description" content="Join Kopare - Co-parenting simplified with shared calendars, expense tracking, and messaging.">
     <link rel="icon" type="image/png" href="https://kopare.app/assets/logo.png">
     <meta name="color-scheme" content="light dark">
+    <script>
+        // Which store this visitor gets, set before the page draws so nothing flashes.
+        // iPadOS reports a Mac user agent; touch tells it apart.
+        (function () {
+            var ua = navigator.userAgent;
+            var ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+            // Large Android tablets ask for desktop sites, which drops "Android" from the user agent.
+            var android = /Android/i.test(ua) || (/Linux/.test(ua) && !/CrOS/.test(ua) && navigator.maxTouchPoints > 0);
+            document.documentElement.dataset.platform = android ? 'android' : ios ? 'ios' : 'other';
+        })();
+    </script>
     <style>
         :root {
             --navy: #244563; --coral: #FB9281; --cream: #F7F4F5; --sky: #E4EBF9; --sky-top: #EEF2FB;
@@ -72,6 +83,11 @@
             font-size: 13px; font-weight: 700; background: rgba(36,69,99,.10); color: var(--ink); }
         @media (prefers-color-scheme: dark) { .num { background: rgba(255,255,255,.12); } }
         .store { margin-top: 20px; background: var(--apple-bg); color: var(--apple-ink); }
+        /* Android: Google Play and its steps. iPhone/iPad: unchanged. Desktop: unchanged. */
+        .steps-android, .play { display: none; }
+        [data-platform="android"] .steps-android { display: grid; }
+        [data-platform="android"] .steps-v1, [data-platform="android"] .steps-v2, [data-platform="android"] .app-store { display: none; }
+        [data-platform="android"] .play { display: flex; }
         .open { margin-top: 10px; background: transparent; color: var(--ink-2); font-size: 15px; font-weight: 600; min-height: 44px; }
         .missing { display: none; }
         body[data-signin="v1"] .steps-v2, body[data-signin="v2"] .steps-v1 { display: none; }
@@ -120,8 +136,15 @@
             <li><span class="num">2</span><span>Open it and tap <b>I have an invite code</b>.</span></li>
             <li><span class="num">3</span><span><b>Paste the code</b>, then sign in with Apple. You'll land in the shared calendar.</span></li>
         </ol>
+        <!-- Android 1.0.0: Welcome > Name ("Complete Setup", first run only) > No invite yet > Join. -->
+        <ol class="steps steps-android">
+            <li><span class="num">1</span><span><b>Get Kopare</b> from Google Play.</span></li>
+            <li><span class="num">2</span><span><b>Sign in with Google</b> and finish the quick setup.</span></li>
+            <li><span class="num">3</span><span>Tap <b>Join with an invite code</b>, paste the code, then tap <b>Join this calendar</b>.</span></li>
+        </ol>
 
-        <a class="btn store" href="https://apps.apple.com/app/kopare/id6749215322">Download on the App Store</a>
+        <a class="btn store app-store" href="https://apps.apple.com/app/kopare/id6749215322">Download on the App Store</a>
+        <a class="btn store play" href="https://play.google.com/store/apps/details?id=com.kopare.app">Get it on Google Play</a>
         <a class="btn open has-code" id="open" href="#">Already have Kopare? Open it</a>
     </section>
 
@@ -167,8 +190,11 @@
             setTimeout(() => { copy.textContent = 'Copy code'; copy.classList.remove('done'); }, 2500);
         });
 
-        // The app registers tandemapp:// (Info.plist), not kopare://.
-        document.getElementById('open').href = 'tandemapp://join?code=' + encodeURIComponent(code);
+        // The iPhone app registers tandemapp:// (Info.plist), not kopare://. The Android app
+        // has no custom scheme; an intent opens its kopare.app/join/ link, or Play if not installed.
+        document.getElementById('open').href = document.documentElement.dataset.platform === 'android'
+            ? 'intent://kopare.app/join/' + encodeURIComponent(code) + '#Intent;scheme=https;package=com.kopare.app;end'
+            : 'tandemapp://join?code=' + encodeURIComponent(code);
     }
 </script>
 </body>

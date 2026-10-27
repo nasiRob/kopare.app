@@ -108,6 +108,8 @@ img { max-width: 100%; }
 }
 .btn-appstore:hover { color: var(--cream); background: var(--navy-deep); transform: translateY(-1px); }
 .btn-appstore svg { width: 19px; height: 19px; }
+.store-buttons { display: flex; flex-wrap: wrap; gap: 12px; }
+.cta .store-buttons { justify-content: center; }
 
 /* ---------- Hero ---------- */
 .hero { position: relative; padding: 82px 0 64px; }
