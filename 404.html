@@ -40,8 +40,11 @@
         }
 
         .icon {
-            font-size: 80px;
-            margin-bottom: 20px;
+            display: block;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            color: #667eea;
         }
 
         h1 {
@@ -61,13 +64,20 @@
             display: inline-block;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 15px 40px;
+            padding: 15px 20px;
             border-radius: 10px;
             text-decoration: none;
             font-weight: 600;
             font-size: 16px;
             margin: 10px 5px;
             transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn svg {
+            width: 18px;
+            height: 18px;
+            margin-right: 6px;
+            vertical-align: -3px;
         }
 
         .btn:hover {
@@ -98,13 +108,20 @@
 </head>
 <body>
     <div class="container">
-        <div class="icon">🔍</div>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg>
         <h1>Page Not Found</h1>
         <p>The page you're looking for doesn't exist.</p>
         <div class="path" id="currentPath"></div>
         <p>You might be looking for:</p>
         <a href="https://kopare.app" class="btn">Kopare Home</a>
-        <a href="https://apps.apple.com/app/kopare/id6749215322" class="btn">Download App</a>
+        <a href="https://apps.apple.com/us/app/kopare/id6749215322" class="btn">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09z"/></svg>
+            Download on the App Store
+        </a>
+        <a href="https://play.google.com/store/apps/details?id=com.kopare.app" class="btn">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 3.6v16.8a1 1 0 0 0 1.5.86l13.7-8.4a1 1 0 0 0 0-1.72L7.5 2.74A1 1 0 0 0 6 3.6z"/></svg>
+            Get it on Google Play
+        </a>
 
         <div class="footer">
             <a href="https://kopare.app" style="color: #667eea; text-decoration: none;">kopare.app</a> •
