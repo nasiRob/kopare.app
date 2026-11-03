@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Kopare for Coordinators</title>
+<link rel="icon" type="image/png" href="/assets/logo.png">
+<style>
+/* Layout: a guided six-step tour; each step pairs the coordinator's website (browser frame) with a parent's phone. */
+:root{
+  --ink:#1B2340; --ink-2:#5C6885; --ink-3:#8D97AF;
+  --paper:#E9EFFA; --card:#FFFFFF; --sunk:#F3F6FC; --cream:#FBF4EC;
+  --blue:#3A5FD4; --blue-tint:#DEE8FB; --blue-ink:#26407F;
+  --rose:#E2566A; --rose-tint:#FFE3E7;
+  --green:#2E9B5C; --green-tint:#E3F4EA;
+  --amber:#B8642F; --amber-tint:#FCEBDD;
+  --line:rgba(27,35,64,.12); --line-2:rgba(27,35,64,.07);
+  --frame:#1B2340; --bubble-me:#3A5FD4; --bubble-me-ink:#fff; --bubble-them:#EEF2FA;
+  --coord:#5B3FB8; --coord-tint:#EEE8FB;
+  --hl:#FFE89A;
+  --shadow:0 6px 18px rgba(27,35,64,.10),0 1px 2px rgba(27,35,64,.06);
+  --font:ui-rounded,-apple-system,"SF Pro Rounded","SF Pro Text",system-ui,sans-serif;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --mono:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --ink:#E8ECF6; --ink-2:#A9B3CB; --ink-3:#7A86A3;
+  --paper:#0F1424; --card:#182036; --sunk:#121a2d; --cream:#2A2420;
+  --blue:#7C9BFF; --blue-tint:#22305A; --blue-ink:#C9D6FF;
+  --rose:#FF8A9A; --rose-tint:#3A1E26;
+  --green:#5CCB8A; --green-tint:#17322A;
+  --amber:#F0A36E; --amber-tint:#3A281B;
+  --line:rgba(232,236,246,.14); --line-2:rgba(232,236,246,.08);
+  --frame:#05070d; --bubble-me:#5574E0; --bubble-me-ink:#fff; --bubble-them:#232c45;
+  --coord:#B9A2FF; --coord-tint:#2B2350; --hl:#6B5A1A;
+  --shadow:0 6px 18px rgba(0,0,0,.35);
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --ink:#E8ECF6; --ink-2:#A9B3CB; --ink-3:#7A86A3;
+  --paper:#0F1424; --card:#182036; --sunk:#121a2d; --cream:#2A2420;
+  --blue:#7C9BFF; --blue-tint:#22305A; --blue-ink:#C9D6FF;
+  --rose:#FF8A9A; --rose-tint:#3A1E26;
+  --green:#5CCB8A; --green-tint:#17322A;
+  --amber:#F0A36E; --amber-tint:#3A281B;
+  --line:rgba(232,236,246,.14); --line-2:rgba(232,236,246,.08);
+  --frame:#05070d; --bubble-me:#5574E0; --bubble-me-ink:#fff; --bubble-them:#232c45;
+  --coord:#B9A2FF; --coord-tint:#2B2350; --hl:#6B5A1A;
+  --shadow:0 6px 18px rgba(0,0,0,.35);
+  color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--paper);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+button{font:inherit;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+h1{font-size:clamp(30px,5vw,44px);line-height:1.06;letter-spacing:-.025em;margin:6px 0 10px;font-weight:800;text-wrap:balance}
+.lede{font-size:18px;color:var(--ink-2);max-width:62ch;margin:0}
+.note{font-size:13px;color:var(--ink-3);margin-top:8px}
+/* step nav */
+.steps{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.step-btn{flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--ink-2);border-radius:999px;padding:8px 14px;font-weight:700;font-size:14px;display:flex;gap:8px;align-items:center}
+.step-btn .n{width:22px;height:22px;border-radius:50%;background:var(--sunk);display:grid;place-items:center;font-size:12px;font-variant-numeric:tabular-nums}
+.step-btn[aria-selected="true"]{background:var(--blue);color:#fff;border-color:var(--blue)}
+.step-btn[aria-selected="true"] .n{background:rgba(255,255,255,.22);color:#fff}
+.caption{display:flex;flex-direction:column;gap:6px}
+.caption h2{margin:0;font-size:24px;letter-spacing:-.015em;font-weight:800}
+.caption p{margin:0;color:var(--ink-2);max-width:72ch}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:22px;align-items:start}
+.stage.two-phones{grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+@media (max-width:900px){.stage{grid-template-columns:minmax(0,1fr)}}
+.nextrow{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.btn{border:0;border-radius:12px;padding:10px 16px;font-weight:800;font-size:14px;background:var(--blue);color:#fff}
+.btn.ghost{background:transparent;color:var(--blue);border:1px solid var(--line)}
+.btn.small{padding:7px 12px;font-size:13px;border-radius:10px}
+.btn.coord{background:var(--coord);color:#fff}
+.btn.green{background:var(--green);color:#fff}
+.btn.rose{background:transparent;color:var(--rose);border:1px solid var(--line)}
+.btn[disabled]{opacity:.45;cursor:default}
+/* browser frame */
+.browser{background:var(--card);border-radius:16px;box-shadow:var(--shadow);border:1px solid var(--line-2);overflow:hidden;min-width:0;position:relative}
+.browser.has-tab .pane-h,.browser.has-tab .thread,.browser.has-tab .composer{padding-right:52px}
+.sidetab{position:absolute;right:0;top:150px;writing-mode:vertical-rl;border:0;background:var(--coord);color:#fff;font-weight:800;font-size:13px;letter-spacing:.06em;padding:14px 8px;border-radius:10px 0 0 10px;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow)}
+.sidetab svg{transform:rotate(90deg)}
+.drawer-h{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line-2);font-weight:800;font-size:14px;background:var(--coord-tint)}
+.closex{border:0;background:var(--card);color:var(--ink-2);border-radius:8px;padding:4px 10px;font-weight:800;font-size:13px}
+.drawer{background:var(--sunk)}
+.composer4{border-top:1px solid var(--line-2);padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.composer4 .crow{display:flex;gap:8px;align-items:center}
+.composer4 input.input{color:var(--ink);font:inherit;font-size:14px}
+.attachments{display:flex;flex-direction:column;gap:6px}
+.attach{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--coord);background:var(--coord-tint);border-radius:10px;padding:8px 10px;font-size:13px}
+.attach .ref{font-weight:800;color:var(--coord);white-space:nowrap}
+.attach .snip{flex:1;min-width:0;color:var(--ink-2);font-family:var(--serif);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.overlay{position:fixed;inset:0;background:rgba(10,14,28,.55);z-index:50;display:flex;justify-content:center;align-items:flex-start;overflow-y:auto;
+  padding:calc(24px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
+.ov-box{background:var(--card);border-radius:18px;width:100%;max-width:1060px;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.ov-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line-2)}
+.ov-grid{display:grid;grid-template-columns:280px minmax(0,1fr)}
+@media (max-width:760px){.ov-grid{grid-template-columns:minmax(0,1fr)}}
+.ov-opts{padding:16px;display:flex;flex-direction:column;gap:10px;border-right:1px solid var(--line-2)}
+.ov-opts .h{font-weight:800}
+.opt{display:flex;gap:10px;align-items:flex-start;font-size:14px;cursor:pointer}
+.opt input{margin-top:3px;accent-color:var(--blue)}
+.paperwrap{background:var(--sunk);padding:18px;display:flex;flex-direction:column;gap:18px;align-items:center;min-width:0}
+.paper{background:#fff;color:#1d2230;width:100%;max-width:620px;border-radius:4px;box-shadow:0 4px 14px rgba(0,0,0,.18);padding:26px 30px 30px;font-family:var(--serif);font-size:13px;line-height:1.5}
+.paper .ph{display:flex;justify-content:space-between;font-family:var(--font);font-size:10.5px;color:#6b7385;border-bottom:1px solid #e3e6ee;padding-bottom:8px;margin-bottom:14px}
+.paper h3{font-family:var(--font);font-size:20px;margin:0 0 10px;color:#1d2230}
+.paper .pt{border-collapse:collapse;font-family:var(--font);font-size:12px;margin-bottom:12px}
+.paper .pt td{padding:3px 14px 3px 0}.paper .pt td:first-child{color:#6b7385}
+.paper .sec{font-family:var(--font);font-weight:800;font-size:13px;margin:4px 0 8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:#1d2230}
+.paper .tag{font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:999px;background:#e3f4ea;color:#1f7a47}
+.paper .tag.open{background:#fcebdd;color:#9a5326}
+.paper .toc{margin:0 0 12px;padding-left:18px;font-family:var(--font);font-size:12.5px}
+.paper .small{font-family:var(--font);font-size:11px;color:#6b7385;margin:0}
+.paper .tl{display:grid;grid-template-columns:92px minmax(0,1fr);gap:2px 10px;padding:5px 0;border-bottom:1px dotted #e3e6ee}
+.paper .tlb{min-width:0}
+.paper .tl span{font-family:var(--font);font-size:10.5px;color:#6b7385;font-variant-numeric:tabular-nums;padding-top:2px}
+.paper .tl b{font-family:var(--font);margin-right:6px}
+.paper .tl.ev{color:#6b7385;font-style:italic}
+.paper .tl.co b{color:#5B3FB8}
+.paper .pq{margin-top:6px;border-left:3px solid #5B3FB8;padding:4px 10px;background:#f6f3fd}
+.paper .pq i{display:block;font-family:var(--font);font-style:normal;font-size:10.5px;font-weight:800;color:#6b7385;margin-top:2px}
+.paper .ans2{margin-top:6px;font-family:var(--font);font-size:11px;font-weight:700;color:#1f7a47}
+@media (max-width:520px){.paper{padding:18px}.paper .tl{grid-template-columns:minmax(0,1fr)}}
+.calls{display:flex;flex-direction:column;gap:8px}
+.callrow{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid var(--line-2);border-radius:12px;padding:10px 12px;background:var(--sunk)}
+.calev{display:grid;grid-template-columns:62px minmax(0,1fr);gap:8px;padding:8px 10px;border-radius:12px;background:var(--sunk);font-size:13.5px}
+.calev .tm{font-size:12px;color:var(--ink-3);font-weight:800;font-variant-numeric:tabular-nums;padding-top:2px}
+#cal-call{background:var(--coord-tint);border:1px solid var(--coord)}
+.backlink{border:0;background:transparent;color:var(--blue);font-weight:800;font-size:13.5px;padding:0;align-self:flex-start}
+.famhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.newconv{border:1.5px solid var(--coord);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--coord-tint)}
+.newconv input.input,.newconv textarea.input{background:var(--card);color:var(--ink);font:inherit;font-size:14px}
+.attach .rm{border:0;background:transparent;color:var(--ink-3);font-weight:800;font-size:15px;line-height:1;padding:0 2px}
+.bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--sunk);border-bottom:1px solid var(--line-2)}
+.dots{display:flex;gap:6px}.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.url{flex:1;min-width:0;background:var(--card);border-radius:8px;padding:5px 10px;font-size:12.5px;color:var(--ink-3);font-family:var(--mono);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.portal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--line-2)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800}
+.logo{width:28px;height:28px;border-radius:8px;background:var(--blue);display:grid;place-items:center;color:#fff}
+.who{font-size:13px;color:var(--ink-2);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:var(--sunk);color:var(--ink-2);white-space:nowrap}
+.chip.attn{background:var(--rose-tint);color:var(--rose)}
+.chip.wait{background:var(--amber-tint);color:var(--amber)}
+.chip.ok{background:var(--green-tint);color:var(--green)}
+.chip.coord{background:var(--coord-tint);color:var(--coord)}
+.chip.blue{background:var(--blue-tint);color:var(--blue-ink)}
+.pbody{padding:16px 18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{border:0;background:transparent;padding:6px 12px;border-radius:999px;font-weight:700;color:var(--ink-2);font-size:13.5px}
+.tab[aria-selected="true"]{background:var(--blue-tint);color:var(--blue-ink)}
+.rows{display:flex;flex-direction:column;border:1px solid var(--line-2);border-radius:12px;overflow:hidden}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;padding:12px 14px;border-bottom:1px solid var(--line-2);background:var(--card);text-align:left;border-left:0;border-right:0;border-top:0;color:inherit;width:100%}
+.row:last-child{border-bottom:0}
+.row.click:hover{background:var(--sunk)}
+.row .t{font-weight:800}
+.row .s{font-size:13px;color:var(--ink-2)}
+.row .meta{font-size:12px;color:var(--ink-3);text-align:right;font-variant-numeric:tabular-nums}
+.split{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:0;border-top:1px solid var(--line-2)}
+.split>div{min-width:0}
+.split>div+div{border-left:1px solid var(--line-2)}
+@media (max-width:700px){.split{grid-template-columns:minmax(0,1fr)}.split>div+div{border-left:0;border-top:1px solid var(--line-2)}}
+.pane-h{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line-2);font-weight:800;font-size:14px;flex-wrap:wrap}
+.thread{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.sys{font-size:12px;color:var(--ink-3);text-align:center}
+.msg{max-width:88%;padding:9px 12px;border-radius:14px;font-size:14px}
+.msg .by{font-size:11.5px;font-weight:800;margin-bottom:2px;color:var(--ink-3)}
+.msg.a{background:var(--bubble-them);align-self:flex-start}
+.msg.b{background:var(--bubble-them);align-self:flex-start}
+.msg.c{background:var(--coord-tint);align-self:flex-end;border:1px solid var(--line-2)}
+.msg.c .by{color:var(--coord)}
+.quote{border-left:3px solid var(--coord);background:var(--card);border-radius:8px;padding:8px 10px;margin-top:6px;font-family:var(--serif);font-size:14px;color:var(--ink)}
+.quote .src{font-family:var(--font);font-size:11.5px;font-weight:800;color:var(--ink-3);margin-top:4px;letter-spacing:.02em}
+.rec{border:1.5px solid var(--coord);background:var(--card);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;align-self:stretch}
+.rec .h{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--coord);font-size:13px;text-transform:uppercase;letter-spacing:.08em}
+.rec .ans{display:flex;gap:8px;flex-wrap:wrap}
+.composer{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--line-2);align-items:center;flex-wrap:wrap}
+.input{flex:1;min-width:160px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--sunk);color:var(--ink-2);font-size:13.5px}
+textarea.input{width:100%;min-height:86px;resize:vertical;font:inherit;font-size:14px;color:var(--ink)}
+/* decree */
+.decree{padding:14px 18px 18px;display:flex;flex-direction:column;gap:12px}
+.search{display:flex;gap:8px;align-items:center}
+.page-tag{font-size:11.5px;font-weight:800;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase}
+.para{font-family:var(--serif);font-size:15px;line-height:1.55;padding:8px 10px;border-radius:8px;cursor:pointer;border:1px dashed transparent}
+.para:hover{border-color:var(--line)}
+.para mark{background:var(--hl);color:inherit;border-radius:3px;padding:0 2px}
+.para.sel{background:var(--hl)}
+.para .no{font-family:var(--font);font-weight:800;font-size:12px;color:var(--ink-3);margin-right:6px}
+.citebar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--ink-2);min-height:36px}
+/* phone */
+.phone{width:100%;max-width:320px;justify-self:center;background:var(--frame);border-radius:42px;padding:10px;box-shadow:var(--shadow)}
+.phone{position:relative;margin-top:30px}
+.phone::before{content:attr(data-label);position:absolute;top:-28px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:12px;font-weight:800;letter-spacing:.04em;color:var(--blue-ink);background:var(--blue-tint);padding:4px 10px;border-radius:999px}
+.who-tag{font-size:11.5px;font-weight:800;color:#fff;background:var(--coord);padding:3px 9px;border-radius:999px;white-space:nowrap}
+.screen{background:var(--card);border-radius:33px;overflow:hidden;min-height:560px;display:flex;flex-direction:column;position:relative}
+.status{display:flex;justify-content:space-between;padding:12px 22px 4px;font-size:12.5px;font-weight:800;font-variant-numeric:tabular-nums}
+.app-h{padding:6px 16px 10px;border-bottom:1px solid var(--line-2)}
+.app-h .k{font-size:12px;color:var(--ink-3);font-weight:700}
+.app-h .ti{font-size:19px;font-weight:800;letter-spacing:-.01em}
+.app-body{padding:12px 14px;display:flex;flex-direction:column;gap:10px;flex:1}
+.pcard{background:var(--sunk);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.pcard .h{font-weight:800}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--ink-3);font-weight:700}
+.field .v{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:14px;color:var(--ink);font-weight:500}
+.pmsg{max-width:85%;padding:8px 11px;border-radius:14px;font-size:13.5px}
+.pmsg.me{align-self:flex-end;background:var(--bubble-me);color:var(--bubble-me-ink)}
+.pmsg.them{align-self:flex-start;background:var(--bubble-them)}
+.pmsg.coord{align-self:flex-start;background:var(--coord-tint)}
+.pmsg .by{font-size:11px;font-weight:800;opacity:.75;margin-bottom:2px}
+.checkin{display:flex;align-items:center;justify-content:center;gap:8px;border:1.5px solid var(--coord);color:var(--coord);background:var(--card);border-radius:12px;padding:9px;font-weight:800;font-size:14px;width:100%}
+.sheet{position:absolute;inset:auto 0 0 0;background:var(--card);border-top-left-radius:22px;border-top-right-radius:22px;box-shadow:0 -10px 30px rgba(0,0,0,.18);padding:16px;display:flex;flex-direction:column;gap:10px;font-size:14px}
+.sheet .grab{width:36px;height:5px;border-radius:3px;background:var(--line);align-self:center}
+.hours{display:flex;gap:8px;align-items:flex-start;background:var(--amber-tint);color:var(--amber);border-radius:12px;padding:10px;font-size:13px;font-weight:600}
+.banner{display:flex;gap:8px;align-items:flex-start;background:var(--blue-tint);color:var(--blue-ink);border-radius:12px;padding:10px;font-size:13px;font-weight:600}
+.email{border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px;background:var(--card)}
+.email .from{font-size:12.5px;color:var(--ink-3)}
+.email .subj{font-weight:800}
+.log{width:100%;border-collapse:collapse;font-size:13.5px}
+.log td{padding:8px 6px;border-bottom:1px solid var(--line-2);vertical-align:top}
+.log td:first-child{white-space:nowrap;color:var(--ink-3);font-variant-numeric:tabular-nums;width:1%}
+.settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.setcard{border:1px solid var(--line-2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--sunk)}
+.setcard .h{font-weight:800}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button{flex:1;border:0;background:transparent;border-radius:8px;padding:6px;font-weight:700;font-size:13px;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--blue);color:#fff}
+.ask{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:20px 22px;display:flex;flex-direction:column;gap:10px}
+.ask h2{margin:0;font-size:20px;font-weight:800}
+.ask ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--ink-2)}
+.ico{width:16px;height:16px;flex:0 0 auto}
+.muted{color:var(--ink-3);font-size:12.5px}
+@media (prefers-reduced-motion:no-preference){.fade{animation:fade .25s ease}@keyframes fade{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4m0 0h11l-2 4 2 4H5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-quote" viewBox="0 0 24 24"><path d="M7 7h4v4H8c0 2 1 3 3 3v3c-4 0-6-2-6-6V7zm8 0h4v4h-3c0 2 1 3 3 3v3c-4 0-6-2-6-6V7z" fill="currentColor"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 4v16M6 20h12M4 8h16M7 8l-3 6h6zM17 8l-3 6h6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4.5-4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 7l9 6 9-6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+</svg>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><a href="/" style="color:inherit;text-decoration:none">Kopare</a> · for parenting coordinators</div>
+    <h1>Step into the conversation that needs you, and only that one.</h1>
+    <p class="lede">Kopare is a free co-parenting app. Parents talk privately. When a conversation needs help, either parent checks in with you, and you join it from your own website, with the order at your side.</p>
+    <p class="note">Design preview with an example family. Nothing here is live and no real people are shown. Click through the six steps.</p>
+    <p class="note"><b>Browser windows</b> are your coordinator website. <b>Phones</b> are the parents’ Kopare app, to show what each parent sees.</p>
+  </header>
+
+  <nav class="steps" role="tablist" aria-label="Tour steps" id="steps"></nav>
+
+  <div class="caption" id="caption"></div>
+
+  <!-- STEP 1 -->
+  <section class="stage two-phones" data-step="1">
+    <div class="phone" data-label="Maya’s phone · Kopare app (parent)"><div class="screen">
+      <div class="status"><span>7:42 PM</span><span>Maya</span></div>
+      <div class="app-h"><div class="k">Settings · Family</div><div class="ti">Add a coordinator</div></div>
+      <div class="app-body">
+        <div class="field">Coordinator's name<div class="v">Dana Whitfield</div></div>
+        <div class="field">Email<div class="v">dana@whitfieldpc.example</div></div>
+        <p class="muted">James has to accept before Dana is invited. Dana only sees conversations one of you checks in.</p>
+        <button class="btn" id="s1-send">Ask James to accept</button>
+        <div class="banner" id="s1-wait" hidden><svg class="ico"><use href="#i-clock"/></svg><span>Waiting for James to accept.</span></div>
+      </div>
+    </div></div>
+
+    <div class="phone" data-label="James’s phone · Kopare app (parent)"><div class="screen">
+      <div class="status"><span>7:43 PM</span><span>James</span></div>
+      <div class="app-h"><div class="k">Messages</div><div class="ti">Coordinator request</div></div>
+      <div class="app-body">
+        <div class="pcard" id="s1-req" hidden>
+          <div class="h">Maya wants to add a parenting coordinator</div>
+          <div>Dana Whitfield<br><span class="muted">dana@whitfieldpc.example</span></div>
+          <p class="muted">If you accept, Dana is invited. She sees only conversations either of you checks in. Removing her later takes both of you.</p>
+          <div class="ans" style="display:flex;gap:8px"><button class="btn green small" id="s1-accept">Accept</button><button class="btn rose small" id="s1-decline">Decline</button></div>
+        </div>
+        <p class="muted" id="s1-empty">No requests yet. Tap "Ask James to accept" on Maya's phone.</p>
+        <div class="banner" id="s1-done" hidden></div>
+      </div>
+    </div></div>
+
+    <div class="email" id="s1-email" hidden>
+      <div class="from"><svg class="ico" style="vertical-align:-3px"><use href="#i-mail"/></svg> To dana@whitfieldpc.example</div>
+      <div class="subj" id="s1-email-subj"></div>
+      <div id="s1-email-body" class="muted"></div>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="stage" data-step="2" hidden>
+    <div class="browser">
+      <div class="bar"><div class="dots"><i></i><i></i><i></i></div><span class="who-tag">Coordinator’s website</span><div class="url">pro.kopare.app/cases</div></div>
+      <div class="portal-head">
+        <div class="brand"><span class="logo"><svg class="ico"><use href="#i-scale"/></svg></span>Your cases</div>
+        <div class="who"><span>Dana Whitfield, Parenting Coordinator</span><span class="chip"><svg class="ico"><use href="#i-clock"/></svg>Mon–Fri, 9 AM–5 PM CT</span></div>
+      </div>
+      <div class="pbody">
+        <div class="tabs" role="tablist">
+          <button class="tab" aria-selected="true" data-cl="active">Active · 4</button>
+          <button class="tab" aria-selected="false" data-cl="pending">Pending · 1</button>
+          <button class="tab" aria-selected="false" data-cl="past">Past · 2</button>
+        </div>
+        <div class="rows" data-list="active">
+          <button class="row click" id="open-family"><div><div class="t">Rivera / Okafor</div><div class="s">Maya checked in: "Thanksgiving pickup"</div></div><div class="meta"><span class="chip attn">New check-in</span><br>Tue 10:14 PM</div></button>
+          <div class="row"><div><div class="t">Chen / Morales</div><div class="s">Your recommendation on "Summer camp week": 1 of 2 answered</div></div><div class="meta"><span class="chip wait">Waiting on a parent</span><br>Mon 3:02 PM</div></div>
+          <div class="row"><div><div class="t">Patel / Brooks</div><div class="s">New message in "School pickup on Wednesdays"</div></div><div class="meta"><span class="chip blue">New message</span><br>Mon 11:40 AM</div></div>
+          <div class="row"><div><div class="t">Hughes / Lind</div><div class="s">No open conversations</div></div><div class="meta">Quiet<br>Oct 21</div></div>
+        </div>
+        <div class="rows" data-list="pending" hidden>
+          <div class="row"><div><div class="t">Nguyen / Park</div><div class="s">Jordan Park declined adding you on Nov 18. Sam Nguyen can ask again.</div></div><div class="meta"><span class="chip wait">Declined once</span><br>Nov 18</div></div>
+        </div>
+        <div class="rows" data-list="past" hidden>
+          <div class="row"><div><div class="t">Adams / Reyes</div><div class="s">Removed by both parents on Sep 30. Your record of 6 conversations stays, read-only.</div></div><div class="meta"><span class="chip"><svg class="ico"><use href="#i-lock"/></svg>Read-only</span></div></div>
+          <div class="row"><div><div class="t">Foster / Kim</div><div class="s">Removed by both parents on Jun 12. Your record of 3 conversations stays, read-only.</div></div><div class="meta"><span class="chip"><svg class="ico"><use href="#i-lock"/></svg>Read-only</span></div></div>
+        </div>
+        <p class="muted">Families that need you sort to the top. Click Rivera / Okafor.</p>
+      </div>
+      <div class="pbody" id="family" hidden>
+        <button class="backlink" id="back-cases">‹ All cases</button>
+        <div class="famhead">
+          <div><div class="t" style="font-size:20px;font-weight:800">Rivera / Okafor</div><div class="muted">Maya Rivera · James Okafor · Case 2023-DR-04512 · Coordinator since Nov 4</div></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost small" id="call-open">Schedule a call</button><button class="btn coord small" id="start-open">Start a conversation</button></div>
+        </div>
+        <div class="newconv" id="newcall" hidden>
+          <div class="field">Title<input class="input" id="call-title" type="text" value="Joint call: winter break"></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
+            <div class="field">Date<input class="input" id="call-date" type="text" value="Thu, Dec 2"></div>
+            <div class="field">Time (your time zone)<input class="input" id="call-time" type="text" value="4:00 – 4:30 PM CT"></div>
+          </div>
+          <div class="field">Video or phone link<input class="input" id="call-link" type="text" value="meet.example.com/whitfield-pc"></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="btn coord small" id="call-send">Add to both parents' calendars</button><button class="btn ghost small" id="call-cancel">Cancel</button><span class="muted">Each parent sees it in their own time zone and gets a reminder.</span></div>
+        </div>
+        <div class="calls" id="calls"><div class="muted" id="calls-empty">No calls scheduled.</div></div>
+        <div class="newconv" id="newconv" hidden>
+          <div class="field">Subject<input class="input" id="nc-subj" type="text" value="Winter break schedule"></div>
+          <div class="field">Message<textarea class="input" id="nc-msg">Maya, James: winter break starts Dec 18. Please each confirm your travel plans here by Dec 4 so we can settle the handoff dates early.</textarea></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="btn coord small" id="nc-send">Send to both parents</button><button class="btn ghost small" id="nc-cancel">Cancel</button><span class="muted">Both parents see it right away, like any conversation.</span></div>
+        </div>
+        <div class="rows" id="conv-list">
+          <button class="row click" data-goto="3"><div><div class="t">Thanksgiving pickup</div><div class="s">Checked in by Maya · Tue 10:14 PM (after hours)</div></div><div class="meta"><span class="chip attn">New check-in</span></div></button>
+          <div class="row"><div><div class="t">Leo's soccer on James's weekends</div><div class="s">Checked in by James · Nov 13 · Last message from you, Nov 13</div></div><div class="meta"><span class="chip wait">Open</span></div></div>
+          <div class="row"><div><div class="t">Holiday travel notice</div><div class="s">Started by you · Nov 6</div></div><div class="meta"><span class="chip ok">Resolved Nov 10</span></div></div>
+        </div>
+        <p class="muted">Every conversation you've been brought into or started with this family. The parents' other conversations stay private.</p>
+      </div>
+    </div>
+    <div class="phone" data-label="James’s phone · Kopare app (parent)"><div class="screen">
+      <div class="status"><span>2:16 PM</span><span>James</span></div>
+      <div class="app-h"><div class="k">Calendar</div><div class="ti">Thursday, Dec 2</div></div>
+      <div class="app-body" id="cal-phone">
+        <div class="banner" id="cal-push" hidden><svg class="ico"><use href="#i-clock"/></svg><span>Dana Whitfield scheduled a call with you and Maya.</span></div>
+        <div class="calev"><div class="tm">8:00 AM</div><div><b>School</b><div class="muted">Leo and Ava</div></div></div>
+        <div class="calev" id="cal-call" hidden><div class="tm">3:00 PM</div><div><b id="cal-call-t">Joint call</b><div class="muted">With Dana Whitfield, your coordinator · 3:00 – 3:30 PM</div><button class="btn coord small" style="margin-top:6px">Join</button></div></div>
+        <div class="calev"><div class="tm">5:30 PM</div><div><b>Soccer practice</b><div class="muted">Leo</div></div></div>
+        <p class="muted" id="cal-hint">Tap "Schedule a call" on the family page to see it land here.</p>
+        <p class="muted" style="margin-top:auto">James lives in Mountain time, so a 4:00 PM Central call shows as 3:00 PM.</p>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="stage" data-step="3" hidden>
+    <div class="browser has-tab">
+      <button class="sidetab" data-goto="4" aria-label="Open the order"><svg class="ico"><use href="#i-scale"/></svg>Order</button>
+      <div class="bar"><div class="dots"><i></i><i></i><i></i></div><span class="who-tag">Coordinator’s website</span><div class="url">pro.kopare.app/cases/rivera-okafor/thanksgiving-pickup</div></div>
+      <div class="portal-head">
+        <div class="brand">Rivera / Okafor <span class="chip attn" id="s3-chip">New check-in</span></div>
+        <div class="who"><span>Maya Rivera · James Okafor</span></div>
+      </div>
+      <div class="pane-h"><span>Thanksgiving pickup</span><span class="muted" id="s3-sys">Waiting for a check-in. Tap the button on Maya's phone.</span></div>
+      <div class="thread" id="s3-thread">
+        <div class="msg a"><div class="by">Maya</div>Thanksgiving is my year. I'd like to pick the kids up Wednesday after school so we can drive to my mom's.</div>
+        <div class="msg b"><div class="by">James</div>Wednesday is still my day. You can have them Thursday morning.</div>
+        <div class="msg a"><div class="by">Maya</div>That means driving Thanksgiving morning. The order gives me the whole break.</div>
+        <div class="msg b"><div class="by">James</div>The break starts Thursday. Wednesday is a school day.</div>
+      </div>
+      <div class="composer"><div class="input">Write to both parents…</div><button class="btn coord small" disabled>Send</button></div>
+    </div>
+
+    <div class="phone" data-label="Maya’s phone · Kopare app (parent)"><div class="screen">
+      <div class="status"><span>10:14 PM</span><span>Maya</span></div>
+      <div class="app-h"><div class="k">Conversation</div><div class="ti">Thanksgiving pickup</div></div>
+      <div class="app-body">
+        <div class="pmsg me">That means driving Thanksgiving morning. The order gives me the whole break.</div>
+        <div class="pmsg them"><div class="by">James</div>The break starts Thursday. Wednesday is a school day.</div>
+        <div style="flex:1"></div>
+        <button class="checkin" id="s3-open"><svg class="ico"><use href="#i-flag"/></svg>Check in with Dana</button>
+        <div class="banner" id="s3-sent" hidden><svg class="ico"><use href="#i-check"/></svg><span>Dana can see this conversation now. James has been told.</span></div>
+      </div>
+      <div class="sheet" id="s3-sheet" hidden>
+        <div class="grab"></div>
+        <div style="font-weight:800;font-size:16px">Check in with Dana?</div>
+        <p style="margin:0">Dana will see this whole conversation and can reply in it. James will be told you checked in.</p>
+        <div class="hours"><svg class="ico"><use href="#i-clock"/></svg><span>Dana's hours are Mon–Fri, 9 AM–5 PM. It's after hours, so she'll see this when she's back.</span></div>
+        <button class="btn coord" id="s3-confirm">Check in</button>
+        <button class="btn ghost" id="s3-cancel">Not now</button>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- STEP 4 -->
+  <section class="stage" data-step="4" hidden>
+    <div class="browser">
+      <div class="bar"><div class="dots"><i></i><i></i><i></i></div><span class="who-tag">Coordinator’s website</span><div class="url">pro.kopare.app/cases/rivera-okafor/thanksgiving-pickup</div></div>
+      <div class="portal-head">
+        <div class="brand">Rivera / Okafor</div>
+        <div class="who"><span>Maya Rivera · James Okafor</span></div>
+      </div>
+      <div class="split">
+        <div>
+          <div class="pane-h"><span>Thanksgiving pickup</span><span class="chip coord">You're in this conversation</span></div>
+          <div class="thread" id="s4-thread">
+            <div class="msg b"><div class="by">James</div>The break starts Thursday. Wednesday is a school day.</div>
+            <div class="sys">Maya checked in with you · Tue 10:14 PM (after hours)</div>
+          </div>
+          <div class="composer4">
+            <div class="attachments" id="s4-attach"></div>
+            <div class="crow"><input class="input" id="s4-text" type="text" placeholder="Write to both parents…" aria-label="Message to both parents"><button class="btn coord small" id="s4-send">Send</button></div>
+          </div>
+        </div>
+        <div class="drawer">
+          <div class="drawer-h"><span><svg class="ico" style="vertical-align:-3px"><use href="#i-scale"/></svg> Order · Final Decree, 2023 <span class="muted">· 42 pages</span></span><button class="closex" data-goto="3" aria-label="Close the order">Close</button></div>
+          <div class="decree">
+            <div class="search"><svg class="ico" style="color:var(--ink-3)"><use href="#i-search"/></svg><div class="input" style="color:var(--ink)">Thanksgiving</div><span class="muted">2 matches</span></div>
+            <div class="page-tag">Page 14</div>
+            <div class="para" tabindex="0" data-cite="14" data-ref="§ 6.3"><span class="no">6.3</span><mark>Thanksgiving</mark>. In odd-numbered years, Mother shall have the children from the time school is dismissed on the last school day before the <mark>Thanksgiving</mark> break until 6:00 p.m. on the Sunday following <mark>Thanksgiving</mark>. In even-numbered years, Father shall have the same period.</div>
+            <div class="para" tabindex="0" data-cite="14" data-ref="§ 6.4"><span class="no">6.4</span>If school is not in session on the Wednesday before <mark>Thanksgiving</mark>, the holiday period begins at 9:00 a.m. on that Wednesday.</div>
+            <div class="page-tag">Page 15</div>
+            <div class="para" tabindex="0" data-cite="15" data-ref="§ 6.9"><span class="no">6.9</span>Holiday periods take precedence over the regular weekday and weekend schedule.</div>
+            <div class="citebar" id="s4-citebar"><span class="muted">Click a paragraph to highlight it.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="phone" data-label="James’s phone · Kopare app (parent)"><div class="screen">
+      <div class="status"><span>9:12 AM</span><span>James</span></div>
+      <div class="app-h"><div class="k">Conversation</div><div class="ti">Thanksgiving pickup</div></div>
+      <div class="app-body" id="s4-phone">
+        <div class="pmsg me">The break starts Thursday. Wednesday is a school day.</div>
+        <div class="banner"><svg class="ico"><use href="#i-flag"/></svg><span>Maya checked in with Dana Whitfield.</span></div>
+        <p class="muted" id="s4-phone-wait">Parents see only the passages Dana cites, never the whole order.</p>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="stage" data-step="5" hidden>
+    <div class="browser has-tab">
+      <button class="sidetab" data-goto="4" aria-label="Open the order"><svg class="ico"><use href="#i-scale"/></svg>Order</button>
+      <div class="bar"><div class="dots"><i></i><i></i><i></i></div><span class="who-tag">Coordinator’s website</span><div class="url">pro.kopare.app/cases/rivera-okafor/thanksgiving-pickup</div></div>
+      <div class="pane-h"><span>Thanksgiving pickup</span><span class="chip coord">You're in this conversation</span></div>
+      <div class="thread">
+        <div class="msg c"><div class="by">Dana Whitfield</div>The order is specific about when the holiday starts.
+          <div class="quote">“In odd-numbered years, Mother shall have the children from the time school is dismissed on the last school day before the Thanksgiving break…”<div class="src">FINAL DECREE · § 6.3 · PAGE 14</div></div></div>
+        <div class="rec" id="s5-draft">
+          <div class="h"><svg class="ico"><use href="#i-scale"/></svg>Recommended resolution</div>
+          <textarea class="input" id="s5-text">Maya picks up Leo and Ava at school dismissal on Wednesday, Nov 24, and returns them to James at 6:00 PM on Sunday, Nov 28. This follows § 6.3: 2027 is an odd year, and Wednesday is the last school day before the break.</textarea>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn coord small" id="s5-post">Post recommendation</button><span class="muted" style="align-self:center">Both parents can accept or decline. Kopare doesn't enforce it.</span></div>
+        </div>
+        <div class="rec" id="s5-posted" hidden>
+          <div class="h"><svg class="ico"><use href="#i-scale"/></svg>Recommended resolution · posted Wed 9:30 AM</div>
+          <div id="s5-posted-text"></div>
+          <div class="ans"><span class="chip wait" id="s5-maya">Maya · waiting</span><span class="chip wait" id="s5-james">James · waiting</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="phone" data-label="James’s phone · Kopare app (parent)"><div class="screen">
+      <div class="status"><span>9:41 AM</span><span>James</span></div>
+      <div class="app-h"><div class="k">Conversation</div><div class="ti">Thanksgiving pickup</div></div>
+      <div class="app-body">
+        <div class="pmsg coord"><div class="by">Dana Whitfield · Coordinator</div>The order is specific about when the holiday starts.</div>
+        <p class="muted" id="s5-phone-empty">Post the recommendation to see what James sees.</p>
+        <div class="rec" id="s5-card" hidden>
+          <div class="h"><svg class="ico"><use href="#i-scale"/></svg>Dana's recommendation</div>
+          <div id="s5-card-text" style="font-size:13.5px"></div>
+          <div class="ans" id="s5-btns"><button class="btn green small" data-ans="accept">Accept</button><button class="btn rose small" data-ans="decline">Decline</button></div>
+          <div class="muted" id="s5-answered" hidden></div>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- STEP 6 -->
+  <section class="stage" data-step="6" hidden>
+    <div class="browser">
+      <div class="bar"><div class="dots"><i></i><i></i><i></i></div><span class="who-tag">Coordinator’s website</span><div class="url">pro.kopare.app/cases/rivera-okafor/activity</div></div>
+      <div class="portal-head"><div class="brand">Rivera / Okafor · Activity</div><button class="btn small" id="s6-export">Export PDF</button></div>
+      <div class="pbody">
+        <table class="log">
+          <tr><td>Nov 3, 7:42 PM</td><td>Maya asked to add you as coordinator</td></tr>
+          <tr><td>Nov 3, 7:58 PM</td><td>James accepted. Invite sent to you</td></tr>
+          <tr><td>Nov 4, 9:05 AM</td><td>You joined the family</td></tr>
+          <tr><td>Nov 23, 10:14 PM</td><td>Maya checked in "Thanksgiving pickup" (after hours)</td></tr>
+          <tr><td>Nov 24, 9:12 AM</td><td>You cited Final Decree § 6.3, page 14</td></tr>
+          <tr><td>Nov 24, 9:30 AM</td><td>You posted a recommended resolution</td></tr>
+          <tr><td>Nov 24, 9:41 AM</td><td>James accepted the recommendation</td></tr>
+          <tr><td>Nov 24, 12:05 PM</td><td>Maya accepted the recommendation</td></tr>
+          <tr><td>Nov 24, 12:06 PM</td><td>"Thanksgiving pickup" resolved by both parents</td></tr>
+        </table>
+        <p class="muted">Messages can't be edited or deleted. If both parents later remove you, you keep a read-only record of every conversation you were in.</p>
+        <div class="settings">
+          <div class="setcard"><div class="h">Office hours</div><div class="muted">Parents see these when they check in. Emails still arrive after hours.</div><div class="field"><div class="v">Mon–Fri · 9:00 AM – 5:00 PM · Central</div></div></div>
+          <div class="setcard"><div class="h">Email me</div><div class="muted">About check-ins and new messages.</div><div class="seg" role="group" aria-label="Email frequency"><button aria-pressed="true" data-seg>Right away</button><button aria-pressed="false" data-seg>Daily summary</button></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="ask">
+      <div class="eyebrow">We'd love your take</div>
+      <h2>Three questions</h2>
+      <ol>
+        <li>Would this save you time compared with how you handle co-parent conflicts today?</li>
+        <li>What's missing that you'd need before using it with a family?</li>
+        <li>What would you expect to pay: per month, or per family?</li>
+      </ol>
+      <p class="muted" style="margin:0">Reply to the email this came with. Parents use Kopare for free; coordinators would subscribe.</p>
+    </div>
+  </section>
+
+  <div class="overlay" id="pdf" hidden role="dialog" aria-modal="true" aria-labelledby="pdf-title">
+    <div class="ov-box">
+      <div class="ov-head">
+        <div><div class="eyebrow">Export</div><div id="pdf-title" style="font-weight:800;font-size:18px">Rivera / Okafor · Your record</div></div>
+        <button class="closex" id="pdf-close">Close</button>
+      </div>
+      <div class="ov-grid">
+        <div class="ov-opts">
+          <div class="h">Conversations you were in</div>
+          <p class="muted" style="margin:0">Every conversation you were checked into or started with this family. Nothing else is included.</p>
+          <label class="opt"><input type="checkbox" checked data-conv="c1"> <span><b>Thanksgiving pickup</b><br><span class="muted">Checked in by Maya · Resolved Nov 24</span></span></label>
+          <label class="opt"><input type="checkbox" checked data-conv="c2"> <span><b>Leo's soccer on James's weekends</b><br><span class="muted">Checked in by James · Open</span></span></label>
+          <label class="opt"><input type="checkbox" checked data-conv="c3"> <span><b>Holiday travel notice</b><br><span class="muted">Started by you · Resolved Nov 10</span></span></label>
+          <div class="h" style="margin-top:6px">Include</div>
+          <label class="opt"><input type="checkbox" checked> <span>Activity log</span></label>
+          <label class="opt"><input type="checkbox" checked> <span>Cited passages from the order</span></label>
+          <button class="btn" style="margin-top:6px">Download PDF</button>
+          <p class="muted" style="margin:0">Preview only. In the product this downloads a PDF.</p>
+        </div>
+        <div class="paperwrap">
+          <div class="paper">
+            <div class="ph"><div><b>Kopare</b> · Coordinator record · Case 2023-DR-04512</div><div>Page 1 of 3</div></div>
+            <h3>Rivera / Okafor family</h3>
+            <table class="pt">
+              <tr><td>Case number</td><td>2023-DR-04512 · Hollis County Family Court</td></tr>
+              <tr><td>Parents</td><td>Maya Rivera · James Okafor</td></tr>
+              <tr><td>Coordinator</td><td>Dana Whitfield, Parenting Coordinator</td></tr>
+              <tr><td>Coordinator since</td><td>Nov 4, 2027</td></tr>
+              <tr><td>Generated</td><td>Nov 30, 2027, 2:15 PM CT</td></tr>
+            </table>
+            <div class="sec">Contents</div>
+            <ol class="toc" id="pdf-toc"></ol>
+            <p class="small">This record contains only conversations the coordinator was checked into or started. Messages appear exactly as sent and can't be edited or deleted.</p>
+          </div>
+          <div class="paper" id="pdf-c1">
+            <div class="ph"><div><b>Kopare</b> · Rivera / Okafor · Case 2023-DR-04512</div><div>Page 2 of 3</div></div>
+            <div class="sec">1 · Thanksgiving pickup <span class="tag">Resolved Nov 24, 12:06 PM</span></div>
+            <div class="tl"><span>Nov 23, 6:02 PM</span><b>Maya</b> Thanksgiving is my year. I'd like to pick the kids up Wednesday after school so we can drive to my mom's.</div>
+            <div class="tl"><span>Nov 23, 6:30 PM</span><b>James</b> Wednesday is still my day. You can have them Thursday morning.</div>
+            <div class="tl"><span>Nov 23, 9:51 PM</span><b>Maya</b> That means driving Thanksgiving morning. The order gives me the whole break.</div>
+            <div class="tl"><span>Nov 23, 10:08 PM</span><b>James</b> The break starts Thursday. Wednesday is a school day.</div>
+            <div class="tl ev"><span>Nov 23, 10:14 PM</span>Maya checked in with the coordinator (after hours). James was notified.</div>
+            <div class="tl co"><span>Nov 24, 9:12 AM</span><b>Dana Whitfield</b> Maya, James: the order is specific about when the holiday starts. See below.
+              <div class="pq">“In odd-numbered years, Mother shall have the children from the time school is dismissed on the last school day before the Thanksgiving break until 6:00 p.m. on the Sunday following Thanksgiving…” <i>Final Decree § 6.3, p. 14</i></div></div>
+            <div class="tl co"><span>Nov 24, 9:30 AM</span><b>Recommended resolution</b> Maya picks up Leo and Ava at school dismissal on Wednesday, Nov 24, and returns them to James at 6:00 PM on Sunday, Nov 28.
+              <div class="ans2">James: Accepted, Nov 24, 9:41 AM · Maya: Accepted, Nov 24, 12:05 PM</div></div>
+            <div class="tl ev"><span>Nov 24, 12:06 PM</span>Resolved by both parents.</div>
+          </div>
+          <div class="paper" id="pdf-c2">
+            <div class="ph"><div><b>Kopare</b> · Rivera / Okafor · Case 2023-DR-04512</div><div>Page 3 of 3</div></div>
+            <div id="sec-c2">
+            <div class="sec">2 · Leo's soccer on James's weekends <span class="tag open">Open</span></div>
+            <div class="tl"><span>Nov 12, 8:10 PM</span><b>James</b> Leo made the travel team. Games are Saturdays, some on my weekends. Can we split driving?</div>
+            <div class="tl ev"><span>Nov 13, 7:45 AM</span>James checked in with the coordinator. Maya was notified.</div>
+            <div class="tl"><span>Nov 13, 9:20 AM</span><b>Maya</b> I'm fine driving to the away games on my weekends only.</div>
+            <div class="tl co"><span>Nov 13, 11:02 AM</span><b>Dana Whitfield</b> Let's list the away games first. James, can you share the season schedule here?</div>
+            </div>
+            <div id="sec-c3">
+            <div class="sec" style="margin-top:14px">3 · Holiday travel notice <span class="tag">Resolved Nov 10</span></div>
+            <div class="tl co"><span>Nov 6, 10:00 AM</span><b>Dana Whitfield</b> Started this conversation: please confirm any out-of-state holiday travel at least 14 days ahead.</div>
+            <div class="tl"><span>Nov 6, 12:31 PM</span><b>Maya</b> Driving to Tulsa for Thanksgiving, Nov 24–28.</div>
+            <div class="tl"><span>Nov 7, 8:02 AM</span><b>James</b> Noted. No travel planned on my side.</div>
+            <div class="tl ev"><span>Nov 10, 9:00 AM</span>Resolved by both parents.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nextrow">
+    <button class="btn ghost" id="prev">Back</button>
+    <button class="btn" id="next">Next step</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const STEPS = [
+    {t:"A parent invites you", d:"One parent enters your email. The other parent has to accept before you're invited. If they decline, it's logged, you get an email, and the first parent can ask again."},
+    {t:"Your case list", d:"Every family you work with, with the ones that need you at the top. Open a family to see every conversation you're in with them, start a new one with both parents, or schedule a call that lands on both parents' calendars."},
+    {t:"A check-in arrives", d:"Either parent can check in on a conversation. You see the whole conversation and can reply. The other parent is told. Your office hours set expectations, so a 10 PM conflict doesn't need a 10 PM answer."},
+    {t:"Cite the order", d:"The Order tab on the side of every conversation opens the decree right next to it. Search it, highlight a passage and tap Cite: it attaches to your message like a file, and you write your own note above it. Parents see your note and the quote with its section and page, never the whole order."},
+    {t:"Recommend a resolution", d:"Post a clearly marked recommendation. Each parent accepts or declines, and both answers are logged with the time. Kopare doesn't enforce it; your order decides how binding it is."},
+    {t:"Your record", d:"Every invite, check-in, citation and answer is logged with dates. Nothing can be edited or deleted, and you keep your record even after a family removes you. Export PDF gives you every conversation you were in with the family, with timestamps, citations and each parent's answer."}
+  ];
+  let step = 1;
+  const nav = document.getElementById('steps');
+  STEPS.forEach((s,i)=>{
+    const b=document.createElement('button');
+    b.className='step-btn'; b.setAttribute('role','tab'); b.id='tab-'+(i+1);
+    b.innerHTML='<span class="n">'+(i+1)+'</span>'+s.t;
+    b.onclick=()=>go(i+1); nav.appendChild(b);
+  });
+  function go(n){
+    step=Math.max(1,Math.min(STEPS.length,n));
+    document.querySelectorAll('[data-step]').forEach(s=>{const on=+s.dataset.step===step;s.hidden=!on;if(on)s.classList.add('fade');});
+    nav.querySelectorAll('.step-btn').forEach((b,i)=>b.setAttribute('aria-selected',String(i+1===step)));
+    const s=STEPS[step-1];
+    document.getElementById('caption').innerHTML='<div class="eyebrow">Step '+step+' of '+STEPS.length+'</div><h2>'+s.t+'</h2><p>'+s.d+'</p>';
+    document.getElementById('prev').disabled = step===1;
+    document.getElementById('next').textContent = step===STEPS.length ? 'Start over' : 'Next step';
+    try{ if(location.hash!=='#step'+step) history.replaceState(null,'','#step'+step);}catch(e){}
+  }
+  document.getElementById('prev').onclick=()=>go(step-1);
+  document.getElementById('next').onclick=()=>go(step===STEPS.length?1:step+1);
+  document.querySelectorAll('[data-goto]').forEach(el=>el.onclick=()=>go(+el.dataset.goto));
+  const $=id=>document.getElementById(id);
+
+  // Step 1
+  $('s1-send').onclick=()=>{ $('s1-send').disabled=true; $('s1-wait').hidden=false; $('s1-req').hidden=false; $('s1-empty').hidden=true; };
+  function s1Answer(ok){
+    $('s1-req').hidden=true; $('s1-wait').hidden=true; $('s1-done').hidden=false; $('s1-email').hidden=false;
+    if(ok){
+      $('s1-done').innerHTML='Accepted. Dana has been invited.';
+      $('s1-email-subj').textContent='You’re invited to work with the Rivera / Okafor family on Kopare';
+      $('s1-email-body').textContent='Maya Rivera and James Okafor both accepted you as their parenting coordinator. Set up your account to see conversations they check in with you.';
+    } else {
+      $('s1-done').innerHTML='Declined. This is logged, and Maya can ask again.';
+      $('s1-email-subj').textContent='A parent declined adding you on Kopare';
+      $('s1-email-body').textContent='Maya Rivera asked to add you as coordinator for the Rivera / Okafor family. James Okafor declined on Nov 3 at 7:43 PM. Maya can ask again.';
+    }
+  }
+  $('s1-accept').onclick=()=>s1Answer(true);
+  $('s1-decline').onclick=()=>s1Answer(false);
+
+  // Step 2 tabs
+  document.querySelectorAll('[data-cl]').forEach(t=>t.onclick=()=>{
+    document.querySelectorAll('[data-cl]').forEach(x=>x.setAttribute('aria-selected',String(x===t)));
+    document.querySelectorAll('[data-list]').forEach(l=>l.hidden=l.dataset.list!==t.dataset.cl);
+  });
+
+  // Step 2: family page + start a conversation
+  const caseList=document.querySelector('[data-step="2"] .pbody');
+  $('open-family').onclick=()=>{caseList.hidden=true;$('family').hidden=false;$('family').classList.add('fade');};
+  $('back-cases').onclick=()=>{$('family').hidden=true;caseList.hidden=false;};
+  $('call-open').onclick=()=>{$('newcall').hidden=false;$('newconv').hidden=true;$('call-title').focus();};
+  $('call-cancel').onclick=()=>{$('newcall').hidden=true;};
+  $('call-send').onclick=()=>{
+    const t=$('call-title').value.trim()||'Joint call';
+    const r=document.createElement('div'); r.className='callrow fade';
+    r.innerHTML='<div><b></b><div class="muted"></div></div><span class="chip coord">On both calendars</span>';
+    r.querySelector('b').textContent=t;
+    r.querySelector('.muted').textContent=$('call-date').value+' · '+$('call-time').value+' · '+$('call-link').value;
+    $('calls-empty').hidden=true; $('calls').appendChild(r); $('newcall').hidden=true;
+    $('cal-call-t').textContent=t; $('cal-call').hidden=false; $('cal-push').hidden=false; $('cal-hint').hidden=true;
+  };
+  $('start-open').onclick=()=>{$('newconv').hidden=false;$('newcall').hidden=true;$('nc-subj').focus();};
+  $('nc-cancel').onclick=()=>{$('newconv').hidden=true;};
+  $('nc-send').onclick=()=>{
+    const subj=$('nc-subj').value.trim()||'New conversation';
+    const r=document.createElement('div'); r.className='row fade';
+    r.innerHTML='<div><div class="t"></div><div class="s">Started by you · just now · Both parents notified</div></div><div class="meta"><span class="chip coord">Open</span></div>';
+    r.querySelector('.t').textContent=subj;
+    $('conv-list').prepend(r); $('newconv').hidden=true;
+  };
+
+  // Step 3
+  $('s3-open').onclick=()=>{ $('s3-sheet').hidden=false; };
+  $('s3-cancel').onclick=()=>{ $('s3-sheet').hidden=true; };
+  $('s3-confirm').onclick=()=>{
+    $('s3-sheet').hidden=true; $('s3-open').hidden=true; $('s3-sent').hidden=false;
+    $('s3-sys').textContent='Maya checked in · Tue 10:14 PM (after hours)';
+    const n=document.createElement('div'); n.className='sys fade'; n.textContent='Maya checked in with you. James was told.'; $('s3-thread').appendChild(n);
+    document.querySelector('[data-step="3"] .composer .btn').disabled=false;
+  };
+
+  // Step 4
+  let sel=null;
+  document.querySelectorAll('.para').forEach(p=>{
+    const pick=()=>{
+      document.querySelectorAll('.para').forEach(x=>x.classList.remove('sel')); p.classList.add('sel'); sel=p;
+      $('s4-citebar').innerHTML='';
+      const b=document.createElement('button'); b.className='btn coord small';
+      b.innerHTML='<svg class="ico" style="vertical-align:-3px"><use href="#i-quote"/></svg> Cite '+p.dataset.ref+', page '+p.dataset.cite;
+      b.onclick=cite; $('s4-citebar').appendChild(b);
+      const m=document.createElement('span'); m.className='muted'; m.textContent='Attaches to your message'; $('s4-citebar').appendChild(m);
+    };
+    p.onclick=pick; p.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();}};
+  });
+  const esc=t=>t.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  let attached=[];
+  function textOf(p){return p.textContent.replace(/^\s*[\d.]+/,'').trim();}
+  function quoteHTML(a){
+    return '<div class="quote">“'+esc(a.text)+'”<div class="src">FINAL DECREE · '+a.ref+' · PAGE '+a.page+'</div></div>';
+  }
+  function drawAttach(){
+    const box=$('s4-attach'); box.innerHTML='';
+    attached.forEach((a,i)=>{
+      const d=document.createElement('div'); d.className='attach fade';
+      d.innerHTML='<svg class="ico" style="color:var(--coord)"><use href="#i-quote"/></svg><span class="ref">'+a.ref+' · p. '+a.page+'</span><span class="snip">'+esc(a.text)+'</span>';
+      const x=document.createElement('button'); x.className='rm'; x.setAttribute('aria-label','Remove citation'); x.textContent='×';
+      x.onclick=()=>{attached.splice(i,1);drawAttach();}; d.appendChild(x); box.appendChild(d);
+    });
+  }
+  function cite(){
+    if(!sel) return;
+    if(!attached.some(a=>a.ref===sel.dataset.ref)) attached.push({ref:sel.dataset.ref,page:sel.dataset.cite,text:textOf(sel)});
+    drawAttach();
+    $('s4-citebar').innerHTML='<span class="chip ok"><svg class="ico"><use href="#i-check"/></svg>Attached. Add your note and send.</span>';
+    sel.classList.remove('sel'); sel=null;
+    $('s4-text').focus();
+  }
+  $('s4-text').value='Maya, James: the order is specific about when the holiday starts. See below.';
+  $('s4-send').onclick=()=>{
+    const t=$('s4-text').value.trim();
+    if(!t && !attached.length) return;
+    const body=(t?esc(t):'')+attached.map(quoteHTML).join('');
+    const m=document.createElement('div'); m.className='msg c fade';
+    m.innerHTML='<div class="by">Dana Whitfield</div>'+body; $('s4-thread').appendChild(m);
+    const pm=document.createElement('div'); pm.className='pmsg coord fade';
+    pm.innerHTML='<div class="by">Dana Whitfield · Coordinator</div>'+body;
+    $('s4-phone').insertBefore(pm,$('s4-phone-wait'));
+    $('s4-text').value=''; attached=[]; drawAttach();
+    $('s4-citebar').innerHTML='<span class="muted">Click a paragraph to highlight it.</span>';
+  };
+  $('s4-text').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('s4-send').click();}};
+
+  // Step 5
+  $('s5-post').onclick=()=>{
+    const txt=$('s5-text').value.trim(); if(!txt) return;
+    $('s5-draft').hidden=true; $('s5-posted').hidden=false; $('s5-posted-text').textContent=txt;
+    $('s5-card').hidden=false; $('s5-card-text').textContent=txt; $('s5-phone-empty').hidden=true;
+  };
+  $('s5-btns').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    const ok=b.dataset.ans==='accept';
+    $('s5-btns').hidden=true; $('s5-answered').hidden=false;
+    $('s5-answered').textContent=(ok?'You accepted':'You declined')+' · Wed 9:41 AM. Dana and Maya can see your answer.';
+    const c=$('s5-james'); c.className='chip '+(ok?'ok':'attn'); c.textContent='James · '+(ok?'accepted':'declined')+' 9:41 AM';
+  });
+
+  // PDF rows: keep the timestamp in its own column and the name + message together in the other
+  document.querySelectorAll('.paper .tl').forEach(row=>{
+    const time=row.querySelector(':scope > span'); if(!time) return;
+    const body=document.createElement('div'); body.className='tlb';
+    [...row.childNodes].forEach(n=>{ if(n!==time) body.appendChild(n); });
+    row.appendChild(body);
+  });
+
+  // Export PDF preview
+  const CONV={c1:'Thanksgiving pickup',c2:"Leo's soccer on James's weekends",c3:'Holiday travel notice'};
+  function drawPdf(){
+    const on=[...document.querySelectorAll('[data-conv]')].filter(c=>c.checked).map(c=>c.dataset.conv);
+    $('pdf-toc').innerHTML=on.length?on.map(k=>'<li>'+CONV[k]+'</li>').join(''):'<li>No conversations selected</li>';
+    $('pdf-c1').hidden=!on.includes('c1');
+    $('sec-c2').hidden=!on.includes('c2'); $('sec-c3').hidden=!on.includes('c3');
+    $('pdf-c2').hidden=!(on.includes('c2')||on.includes('c3'));
+  }
+  document.querySelectorAll('[data-conv]').forEach(c=>c.onchange=drawPdf);
+  $('s6-export').onclick=()=>{drawPdf();$('pdf').hidden=false;$('pdf-close').focus();};
+  $('pdf-close').onclick=()=>{$('pdf').hidden=true;$('s6-export').focus();};
+  $('pdf').onclick=e=>{if(e.target.id==='pdf')$('pdf').hidden=true;};
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('pdf').hidden)$('pdf').hidden=true;});
+
+  // Step 6 segmented
+  document.querySelectorAll('[data-seg]').forEach(b=>b.onclick=()=>document.querySelectorAll('[data-seg]').forEach(x=>x.setAttribute('aria-pressed',String(x===b))));
+
+  const m=(location.hash||'').match(/^#step([1-6])$/);
+  go(m?+m[1]:1);
+})();
+</script>
+
+</body>
+</html>
